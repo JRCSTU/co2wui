@@ -1,42 +1,43 @@
-import re
+import gettext
 import glob
-from stat import S_ISREG, S_ISDIR, ST_CTIME, ST_MODE
-from os import path
-import webbrowser
-import threading
-import tempfile
-import schedula as sh
-import co2mpas_dice
-from co2mpas import dsp as dsp
-from co2mpas import __version__
-import click
-from flask import Flask, render_template, current_app, url_for, request, send_file
-from flask import Response
-from flask import Flask, redirect
-from flask.cli import FlaskGroup
-from os import listdir
-from os.path import isfile, join
-import requests
-import json
 import io
-import os
-import time
-import os.path as osp
-from werkzeug import secure_filename
+import json
 import logging
 import logging.config
-import syncing
-import zipfile
-import shutil
+import os
+import os.path as osp
 import pickle
-from babel import Locale
-import gettext
+import re
+import shutil
+import tempfile
+import threading
+import time
+import webbrowser
+import zipfile
+from os import listdir
+from os import path as osp
+from os.path import isfile, join
+from stat import S_ISDIR, S_ISREG, ST_CTIME, ST_MODE
 
-_ = gettext.gettext
+import click
+import requests
+import schedula as sh
+import yaml
+from co2mpas import __version__
+from co2mpas import dsp as dsp
+from flask import (Flask, Response, current_app, redirect, render_template,
+                   request, send_file, url_for)
+from flask.cli import FlaskGroup
 from jinja2 import Environment, PackageLoader
+from werkzeug import secure_filename
+
+import co2mpas_dice
+import syncing
+from babel import Locale
 from babel.support import Translations
 from flask_babel import Babel
-import yaml
+
+_ = gettext.gettext
 
 
 def listdir_inputs(path):
