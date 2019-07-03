@@ -22,7 +22,6 @@ from stat import S_ISDIR, S_ISREG, ST_CTIME, ST_MODE
 import click
 import requests
 import schedula as sh
-import yaml
 from co2mpas import __version__
 from co2mpas import dsp as dsp
 from flask import (
@@ -37,6 +36,7 @@ from flask import (
 )
 from flask.cli import FlaskGroup
 from jinja2 import Environment, PackageLoader
+from ruamel import yaml
 from werkzeug import secure_filename
 
 import co2mpas_dice
