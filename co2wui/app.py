@@ -22,8 +22,10 @@ from stat import S_ISDIR, S_ISREG, ST_CTIME, ST_MODE
 import click
 import requests
 import schedula as sh
-from co2mpas import __version__
-from co2mpas import dsp as dsp
+import syncing
+from babel import Locale
+from babel.support import Translations
+from co2mpas import __version__, dsp
 from flask import (
     Flask,
     Response,
@@ -35,15 +37,10 @@ from flask import (
     url_for,
 )
 from flask.cli import FlaskGroup
+from flask_babel import Babel
 from jinja2 import Environment, PackageLoader
 from ruamel import yaml
-from werkzeug import secure_filename
-
-import co2mpas_dice
-import syncing
-from babel import Locale
-from babel.support import Translations
-from flask_babel import Babel
+from werkzeug.utils import secure_filename
 
 _ = gettext.gettext
 
