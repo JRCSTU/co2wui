@@ -27,6 +27,7 @@ setup(
         "co2mpas",
         "Flask",
         "Flask-Babel",
+        "flask_session",
         "requests",
         "schedula",
         "Werkzeug",
