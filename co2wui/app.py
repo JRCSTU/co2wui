@@ -992,9 +992,9 @@ def create_app(configfile=None):
     @app.route("/keys/keys-form")
     def keys_form():
 
-        enc_keys = [enc_keys_fpath().name]
-        key_pass = [key_pass_fpath().name]
-        key_sign = [key_sign_fpath().name]
+        enc_keys = [ enc_keys_fpath().name ] if enc_keys_fpath().exists() else []
+        key_pass = [ key_pass_fpath().name ] if key_pass_fpath().exists() else []
+        key_sign = [ key_sign_fpath().name ] if key_sign_fpath().exists() else []
 
         return render_template(
             "layout.html",
