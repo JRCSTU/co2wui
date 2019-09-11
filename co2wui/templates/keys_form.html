@@ -5,7 +5,7 @@
 				<!-- Single col -->
 				<section class="col-lg-8 connectedSortable">
           <div>
-					<h2>{{ _("Load keys") }}</h2>
+					<h2>{{ _("Key management") }}</h2>
           </div>
 					
 					<p>{{ data.texts["keys"]["load keys"] | safe }}</p>
@@ -20,7 +20,11 @@
 				<section class="col-lg-8 connectedSortable">
 
 						<!-- Horizontal Form -->
-						<div class="box box-info">												
+						<div class="box box-info">
+
+							<div class="box-header pull-left">
+									<a href="/keys/keys-dir">{{ _("Do you want to manage the keys from the file system?") }} <i class="fa fa-window-restore"></i> {{ _("Browse the directory!") }}</a>
+							</div><br style="clear: both;"/>
 								
 							<div class="box-header with-border">
 								<h3 class="box-title">{{ _("Encryption keys") }}</h3>

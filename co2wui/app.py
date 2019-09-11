@@ -989,6 +989,22 @@ def create_app(configfile=None):
         fpath.unlink()
         return redirect("/conf/configuration-form", code=302)
 
+    @app.route("/keys/keys-dir")
+    def keys_dir():
+       webbrowser.open(osp.join('file:///' + str(_home_fpath()), 'keys'))
+       return render_template(
+            "layout.html",
+            action="keys_dir",
+            data={
+                "breadcrumb": ["Co2mpas", "Co2mpas keys"],
+                "props": {
+                    "active": {"run": "", "sync": "", "doc": "", "expert": "active"}
+                },
+                "title": "Co2mpas keys",
+                "texts": co2wui_texts,
+            },
+        )
+
     @app.route("/keys/keys-form")
     def keys_form():
 
@@ -1000,7 +1016,7 @@ def create_app(configfile=None):
             "layout.html",
             action="keys_form",
             data={
-                "breadcrumb": ["Co2mpas", _("Load keys")],
+                "breadcrumb": ["Co2mpas", _("Key management")],
                 "props": {
                     "active": {"run": "", "sync": "", "doc": "", "expert": "active"}
                 },
