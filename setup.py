@@ -1,7 +1,7 @@
 import os
 from setuptools import setup, find_packages
 
-with open(os.path.join(os.getcwd(), 'VERSION')) as version_file:
+with open(os.path.join(os.getcwd(), 'co2wui', 'VERSION')) as version_file:
     version = version_file.read().strip()
 
 def read(fpath):
