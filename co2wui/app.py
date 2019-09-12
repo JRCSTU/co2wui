@@ -947,7 +947,9 @@ def create_app(configfile=None):
 
     @app.route("/conf/configuration-form")
     def configuration_form():
-        files = [conf_fpath().name]
+
+        files = [ conf_fpath().name ] if conf_fpath().exists() else []
+
         return render_template(
             "layout.html",
             action="configuration_form",
@@ -1069,7 +1071,7 @@ def create_app(configfile=None):
         of = conf_fpath()
 
         # Input parameters
-        inputs = {"output_file": of.name}
+        inputs = {"output_file": of}
 
         # Dispatcher
         d = dsp.register()
