@@ -85,76 +85,6 @@
 							
 							<div id="file-list" class="box-body">
 								<div class="box-body">               	
-									{% if not data.key_pass|length %}
-									<div>
-										<p>{{ _("No key password file has been uploaded") }}</p>											
-									</div>
-									{% else %}
-									<div class="box-header with-border">
-										<h3 class="box-title">{{ _("Your key password file") }}:</h3>
-									</div>
-									<div class="box-body">
-										<table class="table table-bordered">
-												<tbody><tr>														
-													<th>{{ _("Filename") }}</th>														
-													<th style="width: 40px">&nbsp;</th>
-												</tr>													
-												<tr>														
-													<td>{{data.key_pass[0]}}</td>														
-													<td>
-														<form action="/keys/delete-file" method="get">
-															<input type="hidden" name="upload_type" value="key_pass">
-															<button class="btn btn-sm btn-danger"><i class="glyphicon glyphicon-trash"></i> {{ _("Delete") }}</button>
-														</form>
-													</td>
-												</tr>																							
-											</tbody></table>
-									</div>
-									{% endif %}
-								</div>									
-							</div>
-								
-							{% if not data.key_pass|length %}
-							<form action="/keys/add-key-file" enctype="multipart/form-data" method="post">							
-								<div class="box-body">
-									<p>{{ _("Load key passwords for TA mode.") }}</p>
-                  <div class="form-group col-md-5">
-										<div>
-											<div class="input-group">
-												<input type="text" name="file" id="file_path_key_pass" class="form-control" placeholder="Browse...">
-												<span class="input-group-btn">
-														<button class="btn btn-default" type="button" id="file_browser_key_pass">
-														<i class="fa fa-plus"></i> {{ _("Select a password file") }}</button>																	
-												</span>													
-											</div>
-											<input type="hidden" name="upload_type" value="key_pass">
-											<input type="file" class="hidden" id="file_key_pass" name="file">
-										</div>														
-                  </div>									
-								</div>
-							</form>
-							{% endif %}
-							
-						</div>
-						<!-- /.box -->
-					
-				</section>
-				
-			</div>
-			
-			<!-- Load signature keys -->
-			<div class="row">
-			
-				<section class="col-lg-8 connectedSortable">
-
-						<!-- Horizontal Form -->
-						<div class="box box-info">
-							<div class="box-header with-border">
-								<h3 class="box-title">{{ _("Signature key") }}</h3>
-							</div>
-							
-							<div id="file-list" class="box-body">
-								<div class="box-body">               	
 									{% if not data.key_sign|length %}
 									<div>
 										<p>{{ _("No key signature file has been uploaded") }}</p>											
@@ -205,11 +135,10 @@
 								</div>
 							</form>
 							{% endif %}
-														
+
 						</div>
 						<!-- /.box -->
 					
 				</section>
 				
 			</div>
-			

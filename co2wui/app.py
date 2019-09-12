@@ -128,11 +128,6 @@ def enc_keys_fpath() -> Path:
 
 
 @functools.lru_cache()
-def key_pass_fpath() -> Path:
-    return co2wui_fpath("keys") / "secret.passwords"
-
-
-@functools.lru_cache()
 def key_sign_fpath() -> Path:
     return co2wui_fpath("keys") / "sign.co2mpas.key"
 
@@ -266,7 +261,6 @@ def run_process(args):
         if enc_keys_fpath().exists()
         else "",
         "sign_key": str(key_sign_fpath()) if key_sign_fpath().exists() else "",
-        "encryption_keys_passwords": "",
         "enable_selector": False,
         "type_approval_mode": bool(args.get("tamode")),
     }
@@ -1009,7 +1003,6 @@ def create_app(configfile=None):
     def keys_form():
 
         enc_keys = [ enc_keys_fpath().name ] if enc_keys_fpath().exists() else []
-        key_pass = [ key_pass_fpath().name ] if key_pass_fpath().exists() else []
         key_sign = [ key_sign_fpath().name ] if key_sign_fpath().exists() else []
 
         return render_template(
@@ -1021,7 +1014,6 @@ def create_app(configfile=None):
                     "active": {"run": "", "sync": "", "doc": "", "expert": "active"}
                 },
                 "enc_keys": enc_keys,
-                "key_pass": key_pass,
                 "key_sign": key_sign,
                 "texts": co2wui_texts,
             },
@@ -1033,7 +1025,6 @@ def create_app(configfile=None):
         upload_type = request.form.get("upload_type")
         filepaths = {
             "enc_keys": enc_keys_fpath(),
-            "key_pass": key_pass_fpath(),
             "key_sign": key_sign_fpath(),
         }
 
@@ -1051,7 +1042,6 @@ def create_app(configfile=None):
         upload_type = request.args.get("upload_type")
         filepaths = {
             "enc_keys": enc_keys_fpath(),
-            "key_pass": key_pass_fpath(),
             "key_sign": key_sign_fpath(),
         }
         fpath = filepaths.get(upload_type)
