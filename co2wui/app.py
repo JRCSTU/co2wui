@@ -305,7 +305,7 @@ def create_app(configfile=None):
     sess = Session()
 
     babel = Babel(app)
-    CO2MPAS_VERSION = "3"
+    CO2MPAS_VERSION = __version__
 
     hash = random.getrandbits(128)
 
@@ -324,6 +324,7 @@ def create_app(configfile=None):
     with open(os.path.join(app.root_path, 'VERSION')) as version_file:
       version = version_file.read().strip()
       co2wui_texts["version"] = version
+      co2wui_texts["co2mpas_version"] = CO2MPAS_VERSION
 
     @app.route("/")
     def index():
