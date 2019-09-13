@@ -16,6 +16,7 @@ from pathlib import Path
 from stat import S_ISDIR, S_ISREG, ST_CTIME, ST_MODE
 from typing import Union, List
 
+import atexit
 import click
 import requests
 import schedula as sh
@@ -23,6 +24,8 @@ import syncing
 import gettext
 import pickle
 import random
+import socket
+import urllib.request
 import zipfile
 import shutil
 from babel import Locale
@@ -45,6 +48,9 @@ from flask_babel import Babel
 from jinja2 import Environment, PackageLoader
 from ruamel import yaml
 from werkzeug.utils import secure_filename
+
+# Default port for running the server 
+os.environ["FLASK_RUN_PORT"] = "8999"
 
 _ = gettext.gettext
 
@@ -114,23 +120,73 @@ def _home_fpath() -> Path:
         home = Path.home() / ".co2mpas"
     return home
 
+@functools.lru_cache()
 def co2wui_fpath(*path: Union[Path, str]) -> Path:
     return Path(_home_fpath(), *path)
+
+@functools.lru_cache()
+def port_fpath() -> Path:
+    return _home_fpath() / "server.port"
 
 @functools.lru_cache()
 def conf_fpath() -> Path:
     return _home_fpath() / "conf.yaml"
 
-
 @functools.lru_cache()
 def enc_keys_fpath() -> Path:
     return co2wui_fpath("keys") / "dice.co2mpas.keys"
-
 
 @functools.lru_cache()
 def key_sign_fpath() -> Path:
     return co2wui_fpath("keys") / "sign.co2mpas.key"
 
+def get_running_port():
+    """Read a file containing the port number of the server and checks that
+       the port is actually open
+    """
+    port = None
+    if osp.exists(port_fpath()):
+
+        # Read port number from file
+        with open(port_fpath(), "rb") as port_file:
+            try:
+                port = pickle.load(port_file)
+            except:
+                return None
+
+        # If we have a port we check that it's served by CO2WUI
+        if (port):
+
+          try:
+            # Check that another app is not running
+            signature = ""
+            code = urllib.request.urlopen("http://localhost:" + str(port) + "/signature").code
+            if (code == 200):
+              signature = urllib.request.urlopen("http://localhost:" + str(port) + "/signature").read()
+
+            if (signature == b'CO2WUI'):
+              return port
+
+          except:
+              return None
+
+    return None
+
+def save_running_port(port):
+    """Save the running port in a file
+    """
+    with open(
+        port_fpath(), "wb"
+    ) as port_file:
+        pickle.dump(port, port_file)
+
+def get_free_port():
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.bind(('', 0))
+    addr = s.getsockname()
+    port = addr[1]
+    s.close()
+    return port
 
 def get_summary(runid):
     """Read a summary saved file and returns it as a dict
@@ -146,6 +202,9 @@ def get_summary(runid):
 
     return summary
 
+def remove_port_file():
+    if osp.exists(port_fpath()):
+        os.remove(port_fpath())
 
 def humanised(summary):
     """Return a more readable format of the summary data structure"""
@@ -342,6 +401,10 @@ def create_app(configfile=None):
                 "texts": co2wui_texts,
             },
         )
+
+    @app.route("/signature", methods=["GET"])
+    def signature():
+      return render_template("signature.html")
 
     @app.route("/run/download-template-form")
     def download_template_form():
@@ -1104,14 +1167,35 @@ def create_app(configfile=None):
 
     return app
 
+def app_banner():
+    print("Co2mpas GUI application is running on port " + os.environ["FLASK_RUN_PORT"])
+    print("A browser should have been automatically launched with the correct address")
+    print("If you aren't redirected automatically, please point your browser to:")
+    print("http://localhost:" + os.environ["FLASK_RUN_PORT"])
 
 @click.group(cls=FlaskGroup, create_app=create_app)
 def cli():
     """Management script for the Co2gui application."""
     # FIXME: read port from cli/configs
     # TODO: option for the user to skip opening browser
-    webbrowser.open("http://localhost:5000")
-
+    webbrowser.open("http://localhost:" + os.environ["FLASK_RUN_PORT"])
+    app_banner()
 
 if __name__ == "__main__":
     create_app().run(debug=True)
+
+# Bypass our friend flask cli in order to set the port
+port = get_running_port()
+
+if (port):
+  os.environ["FLASK_RUN_PORT"] = str(port)
+  webbrowser.open("http://localhost:" + os.environ["FLASK_RUN_PORT"])
+  app_banner()
+  exit()
+else:
+  port = get_free_port()
+  if (port):
+    os.environ["FLASK_RUN_PORT"] = str(port)
+
+save_running_port(os.environ["FLASK_RUN_PORT"])
+atexit.register(remove_port_file)
