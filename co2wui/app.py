@@ -108,10 +108,10 @@ def output_fpath(*path: Union[Path, str]) -> Path:
 
 def _home_fpath() -> Path:
 
-    if "CO2WUI_HOME" in os.environ:
-        home = Path(os.environ["CO2WUI_HOME"])
+    if "CO2MPAS_HOME" in os.environ:
+        home = Path(os.environ["CO2MPAS_HOME"])
     else:
-        home = Path.home() / ".co2wui"
+        home = Path.home() / ".co2mpas"
     return home
 
 def co2wui_fpath(*path: Union[Path, str]) -> Path:
