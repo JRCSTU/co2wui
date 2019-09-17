@@ -56,3 +56,12 @@ ul.treeview-menu > li > a {
 	color: white !important;
 }
 
+@media (max-width: 767px) {
+	.jrc-links {
+		display: inline-flex;
+		position: relative;
+		top: -10px;
+		margin: 0;
+		padding-bottom: 0;
+	}
+}
