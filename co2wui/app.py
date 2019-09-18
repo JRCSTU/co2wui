@@ -50,9 +50,6 @@ from ruamel import yaml
 from werkzeug.utils import secure_filename
 
 
-# Default port for running the server
-os.environ["FLASK_RUN_PORT"] = "8999"
-
 _ = gettext.gettext
 
 log = logging.getLogger("werkzeug")
