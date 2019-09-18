@@ -49,7 +49,7 @@ from jinja2 import Environment, PackageLoader
 from ruamel import yaml
 from werkzeug.utils import secure_filename
 
-# Default port for running the server 
+# Default port for running the server
 os.environ["FLASK_RUN_PORT"] = "8999"
 
 _ = gettext.gettext
@@ -59,18 +59,19 @@ log.setLevel(logging.ERROR)
 
 # The various steps of the progress bar
 progress_bar = {
-  'open_input_file': 10,
-  'parse_excel_file': 13,
-  'output.precondition.wltp_p': 15,
-  'output.calibration.wltp_h': 30,
-  'output.calibration.wltp_l': 50,
-  'output.prediction.nedc_h': 60,
-  'output.prediction.nedc_l': 75,
-  'output.prediction.wltp_h': 85,
-  'output.prediction.wltp_l': 90,
-  'format_report_output_data': 95,
-  'write_to_excel': 99
+    "open_input_file": 10,
+    "parse_excel_file": 13,
+    "output.precondition.wltp_p": 15,
+    "output.calibration.wltp_h": 30,
+    "output.calibration.wltp_l": 50,
+    "output.prediction.nedc_h": 60,
+    "output.prediction.nedc_l": 75,
+    "output.prediction.wltp_h": 85,
+    "output.prediction.wltp_l": 90,
+    "format_report_output_data": 95,
+    "write_to_excel": 99,
 }
+
 
 def ensure_working_folders():
     for p in (
@@ -120,25 +121,31 @@ def _home_fpath() -> Path:
         home = Path.home() / ".co2mpas"
     return home
 
+
 @functools.lru_cache()
 def co2wui_fpath(*path: Union[Path, str]) -> Path:
     return Path(_home_fpath(), *path)
+
 
 @functools.lru_cache()
 def port_fpath() -> Path:
     return _home_fpath() / "server.port"
 
+
 @functools.lru_cache()
 def conf_fpath() -> Path:
     return _home_fpath() / "conf.yaml"
+
 
 @functools.lru_cache()
 def enc_keys_fpath() -> Path:
     return co2wui_fpath("keys") / "dice.co2mpas.keys"
 
+
 @functools.lru_cache()
 def key_sign_fpath() -> Path:
     return co2wui_fpath("keys") / "sign.co2mpas.key"
+
 
 def get_running_port():
     """Read a file containing the port number of the server and checks that
@@ -155,38 +162,43 @@ def get_running_port():
                 return None
 
         # If we have a port we check that it's served by CO2WUI
-        if (port):
+        if port:
 
-          try:
-            # Check that another app is not running
-            signature = ""
-            code = urllib.request.urlopen("http://localhost:" + str(port) + "/signature").code
-            if (code == 200):
-              signature = urllib.request.urlopen("http://localhost:" + str(port) + "/signature").read()
+            try:
+                # Check that another app is not running
+                signature = ""
+                code = urllib.request.urlopen(
+                    "http://localhost:" + str(port) + "/signature"
+                ).code
+                if code == 200:
+                    signature = urllib.request.urlopen(
+                        "http://localhost:" + str(port) + "/signature"
+                    ).read()
 
-            if (signature == b'CO2WUI'):
-              return port
+                if signature == b"CO2WUI":
+                    return port
 
-          except:
-              return None
+            except:
+                return None
 
     return None
+
 
 def save_running_port(port):
     """Save the running port in a file
     """
-    with open(
-        port_fpath(), "wb"
-    ) as port_file:
+    with open(port_fpath(), "wb") as port_file:
         pickle.dump(port, port_file)
+
 
 def get_free_port():
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    s.bind(('', 0))
+    s.bind(("", 0))
     addr = s.getsockname()
     port = addr[1]
     s.close()
     return port
+
 
 def get_summary(runid):
     """Read a summary saved file and returns it as a dict
@@ -202,9 +214,11 @@ def get_summary(runid):
 
     return summary
 
+
 def remove_port_file():
     if osp.exists(port_fpath()):
         os.remove(port_fpath())
+
 
 def humanised(summary):
     """Return a more readable format of the summary data structure"""
@@ -230,58 +244,75 @@ def ta_enabled():
 
 
 def colorize(str):
-    str += '<br/>'
-    str = str.replace(": done", ': <span style="color: green; font-weight: bold;">done</span>')
+    str += "<br/>"
+    str = str.replace(
+        ": done", ': <span style="color: green; font-weight: bold;">done</span>'
+    )
     str = re.sub(r"(CO2MPAS output written into) \((.+?)\)", r"\1 (<b>\2</b>)", str)
     return str
+
 
 # Multi process related functions
 def log_phases(dsp):
     """Create a callback in order to log the main phases of the Co2mpas simulation"""
 
     def createLambda(ph, *args):
-      dsp.get_node('CO2MPAS model', node_attr=None)[0]['logger'].info(ph + ": done")
+        dsp.get_node("CO2MPAS model", node_attr=None)[0]["logger"].info(ph + ": done")
 
-    co2mpas_model = dsp.get_node('CO2MPAS model')[0]
+    co2mpas_model = dsp.get_node("CO2MPAS model")[0]
     for k, v in co2mpas_model.dsp.data_nodes.items():
-      if k.startswith('output.'):
-          v['callback'] = functools.partial(createLambda,k)
+        if k.startswith("output."):
+            v["callback"] = functools.partial(createLambda, k)
 
-    additional_phase = dsp.get_node('load_inputs', 'open_input_file', node_attr=None)[0]
-    additional_phase['callback'] = lambda x: additional_phase['logger'].info('open_input_file: done')
+    additional_phase = dsp.get_node("load_inputs", "open_input_file", node_attr=None)[0]
+    additional_phase["callback"] = lambda x: additional_phase["logger"].info(
+        "open_input_file: done"
+    )
 
-    additional_phase = dsp.get_node('load_inputs', 'parse_excel_file', node_attr=None)[0]
-    additional_phase['callback'] = lambda x: additional_phase['logger'].info('parse_excel_file: done')
+    additional_phase = dsp.get_node("load_inputs", "parse_excel_file", node_attr=None)[
+        0
+    ]
+    additional_phase["callback"] = lambda x: additional_phase["logger"].info(
+        "parse_excel_file: done"
+    )
 
-    additional_phase = dsp.get_node('make_report', 'format_report_output_data', node_attr=None)[0]
-    additional_phase['callback'] = lambda x: additional_phase['logger'].info('format_report_output_data: done')
+    additional_phase = dsp.get_node(
+        "make_report", "format_report_output_data", node_attr=None
+    )[0]
+    additional_phase["callback"] = lambda x: additional_phase["logger"].info(
+        "format_report_output_data: done"
+    )
 
-    additional_phase = dsp.get_node('write', 'write_to_excel', node_attr=None)[0]
-    additional_phase['callback'] = lambda x: additional_phase['logger'].info('write_to_excel: done')
+    additional_phase = dsp.get_node("write", "write_to_excel", node_attr=None)[0]
+    additional_phase["callback"] = lambda x: additional_phase["logger"].info(
+        "write_to_excel: done"
+    )
 
     return dsp
+
 
 def register_logger(kw):
     """Record the simulation logger into the dispatcher"""
 
-    d, logger = kw['register_core'], kw['pass_logger']
+    d, logger = kw["register_core"], kw["pass_logger"]
 
     # Logger for CO2MPAS model
-    n = d.get_node('CO2MPAS model', node_attr=None)[0]
-    n['logger'] = logger
+    n = d.get_node("CO2MPAS model", node_attr=None)[0]
+    n["logger"] = logger
 
     for model, phase in [
-      ['load_inputs', 'open_input_file'],
-      ['load_inputs', 'parse_excel_file'],
-      ['make_report', 'format_report_output_data'],
-      ['write', 'write_to_excel']
+        ["load_inputs", "open_input_file"],
+        ["load_inputs", "parse_excel_file"],
+        ["make_report", "format_report_output_data"],
+        ["write", "write_to_excel"],
     ]:
 
-      # Logger for open_input_file
-      n = d.get_node(model, phase, node_attr=None)[0]
-      n['logger'] = logger
+        # Logger for open_input_file
+        n = d.get_node(model, phase, node_attr=None)[0]
+        n["logger"] = logger
 
     return d
+
 
 def run_process(args):
     """Run the simulation process in a thread"""
@@ -316,9 +347,7 @@ def run_process(args):
         "only_summary": bool(args.get("only_summary")),
         "hard_validation": bool(args.get("hard_validation")),
         "declaration_mode": bool(args.get("declaration_mode")),
-        "encryption_keys": str(enc_keys_fpath())
-        if enc_keys_fpath().exists()
-        else "",
+        "encryption_keys": str(enc_keys_fpath()) if enc_keys_fpath().exists() else "",
         "sign_key": str(key_sign_fpath()) if key_sign_fpath().exists() else "",
         "enable_selector": False,
         "type_approval_mode": bool(args.get("tamode")),
@@ -341,12 +370,12 @@ def run_process(args):
     # Dispatcher
     d = dsp.register()
 
-    d.add_function('pass_logger', sh.bypass, inputs=['logger'], outputs=['core_model'])
-    d.add_data('core_model', function=register_logger, wait_inputs=True)
+    d.add_function("pass_logger", sh.bypass, inputs=["logger"], outputs=["core_model"])
+    d.add_data("core_model", function=register_logger, wait_inputs=True)
 
-    n = d.get_node('register_core', node_attr=None)[0]
-    n['filters'] = n.get('filters', [])
-    n['filters'].append(log_phases)
+    n = d.get_node("register_core", node_attr=None)[0]
+    n["filters"] = n.get("filters", [])
+    n["filters"].append(log_phases)
 
     ret = d.dispatch(inputs, ["done", "run", "core_model"])
     with open(
@@ -354,6 +383,7 @@ def run_process(args):
     ) as summary_file:
         pickle.dump(ret["summary"], summary_file)
     return ""
+
 
 def create_app(configfile=None):
     """Main flask app"""
@@ -368,8 +398,8 @@ def create_app(configfile=None):
 
     hash = random.getrandbits(128)
 
-    app.secret_key = ("%032x" % hash)
-    app.config['SESSION_TYPE'] = 'filesystem'
+    app.secret_key = "%032x" % hash
+    app.config["SESSION_TYPE"] = "filesystem"
 
     sess.init_app(app)
 
@@ -380,10 +410,10 @@ def create_app(configfile=None):
 
     ensure_working_folders()
 
-    with open(os.path.join(app.root_path, 'VERSION')) as version_file:
-      version = version_file.read().strip()
-      co2wui_texts["version"] = version
-      co2wui_texts["co2mpas_version"] = CO2MPAS_VERSION
+    with open(os.path.join(app.root_path, "VERSION")) as version_file:
+        version = version_file.read().strip()
+        co2wui_texts["version"] = version
+        co2wui_texts["co2mpas_version"] = CO2MPAS_VERSION
 
     @app.route("/")
     def index():
@@ -404,7 +434,7 @@ def create_app(configfile=None):
 
     @app.route("/signature", methods=["GET"])
     def signature():
-      return render_template("signature.html")
+        return render_template("signature.html")
 
     @app.route("/run/download-template-form")
     def download_template_form():
@@ -453,8 +483,12 @@ def create_app(configfile=None):
     @app.route("/run/simulation-form")
     def simulation_form():
 
-        if ('active_pid' in session) and (session['active_pid'] is not None):
-          return redirect("/run/progress?layout=layout&counter=999&id=" + str(session['active_pid']), code=302)
+        if ("active_pid" in session) and (session["active_pid"] is not None):
+            return redirect(
+                "/run/progress?layout=layout&counter=999&id="
+                + str(session["active_pid"]),
+                code=302,
+            )
 
         inputs = [f.name for f in listdir_inputs("input")]
         return render_template(
@@ -503,8 +537,10 @@ def create_app(configfile=None):
         process = multiprocessing.Process(target=run_process, args=(request.args,))
         process.start()
         id = process.pid
-        session['active_pid'] = str(id)
-        return redirect("/run/progress?layout=layout&counter=0&id=" + str(process.pid), code=302)
+        session["active_pid"] = str(id)
+        return redirect(
+            "/run/progress?layout=layout&counter=0&id=" + str(process.pid), code=302
+        )
 
     @app.route("/run/progress")
     def run_progress():
@@ -530,21 +566,25 @@ def create_app(configfile=None):
         # Read the list of input files
         files = []
         if osp.exists(co2wui_fpath("output", process_id, "files.dat")):
-          started = True
-          with open(co2wui_fpath("output", process_id, "files.dat"), "rb") as files_list:
-              try:
-                  files = pickle.load(files_list)
-              except:
-                  return None
+            started = True
+            with open(
+                co2wui_fpath("output", process_id, "files.dat"), "rb"
+            ) as files_list:
+                try:
+                    files = pickle.load(files_list)
+                except:
+                    return None
 
         # Read the header containing run information
         header = {}
         if osp.exists(co2wui_fpath("output", process_id, "header.dat")):
-          with open(co2wui_fpath("output", process_id, "header.dat"), "rb") as header_file:
-              try:
-                  header = pickle.load(header_file)
-              except:
-                  return None
+            with open(
+                co2wui_fpath("output", process_id, "header.dat"), "rb"
+            ) as header_file:
+                try:
+                    header = pickle.load(header_file)
+                except:
+                    return None
 
         # Default page status
         page = "run_progress"
@@ -553,52 +593,56 @@ def create_app(configfile=None):
         if osp.exists(co2wui_fpath("output", process_id, "result.dat")):
             done = True
             page = "run_complete"
-            session['active_pid'] = None
+            session["active_pid"] = None
 
         # Get the summary of the execution (if ready)
         summary = get_summary(process_id)
         result = "KO" if (summary is None or len(summary[0].keys()) <= 2) else "OK"
 
         # Result is KO if not started and counter > 1
-        if (not started and counter > 1):
-          result = "KO"
-          page = "run_complete"
-          session['active_pid'] = None
+        if not started and counter > 1:
+            result = "KO"
+            page = "run_complete"
+            session["active_pid"] = None
 
         # Check that the process is still running
-        active_processes =  multiprocessing.active_children()
+        active_processes = multiprocessing.active_children()
         alive = False
         for p in active_processes:
-          if (str(p.pid) == process_id):
-            alive = True
+            if str(p.pid) == process_id:
+                alive = True
 
         if not done and not alive:
             result = "KO"
             page = "run_complete"
-            session['active_pid'] = None
+            session["active_pid"] = None
 
         # Get the log file
         log = ""
         loglines = []
         if osp.exists(co2wui_fpath("output", process_id, "logfile.txt")):
-          with open(co2wui_fpath("output", process_id, "logfile.txt")) as f:
-              loglines = f.readlines()
+            with open(co2wui_fpath("output", process_id, "logfile.txt")) as f:
+                loglines = f.readlines()
         else:
-          loglines = ['Waiting for data...']
+            loglines = ["Waiting for data..."]
 
         # Collect log, exclude web server info and colorize
         for logline in loglines:
-            if (logline.startswith('CO2MPAS output written into')):
+            if logline.startswith("CO2MPAS output written into"):
                 num_processed += 1
             if not re.search("- INFO -", logline):
                 log += colorize(logline)
 
         # If simulation is stopped the log is not interesting
-        if (stopped):
-          loglines = ['Simulation stopped.']
+        if stopped:
+            loglines = ["Simulation stopped."]
 
         # Collect data related to execution phases
-        phases = [logline.replace(': done', '').rstrip() for logline in loglines if ": done" in logline]
+        phases = [
+            logline.replace(": done", "").rstrip()
+            for logline in loglines
+            if ": done" in logline
+        ]
 
         # Collect result files
         results = []
@@ -621,11 +665,12 @@ def create_app(configfile=None):
                 "stopped": stopped,
                 "counter": counter,
                 "texts": co2wui_texts,
-                "progress":
-                  (
+                "progress": (
                     (num_processed * (100 / int(round(len(files)))))
-                    + int(round((progress_bar[phases[len(phases)-1]] / len(files))))
-                  ) if (len(phases)) > 0 else 0,
+                    + int(round((progress_bar[phases[len(phases) - 1]] / len(files))))
+                )
+                if (len(phases)) > 0
+                else 0,
                 "summary": summary[0] if summary is not None else None,
                 "results": results if results is not None else None,
                 "header": header,
@@ -635,13 +680,16 @@ def create_app(configfile=None):
     @app.route("/run/stop-simulation/<process_id>", methods=["GET"])
     def stop_simulation(process_id):
         # Check that the process is still running
-        active_processes =  multiprocessing.active_children()
+        active_processes = multiprocessing.active_children()
         for p in active_processes:
-          if (str(p.pid) == process_id):
-            p.terminate()
-            time.sleep(1)
+            if str(p.pid) == process_id:
+                p.terminate()
+                time.sleep(1)
 
-        return redirect("/run/progress?layout=layout&stopped=1&counter=999&id=" + str(process_id), code=302)
+        return redirect(
+            "/run/progress?layout=layout&stopped=1&counter=999&id=" + str(process_id),
+            code=302,
+        )
 
     @app.route("/run/add-file", methods=["POST"])
     def add_file():
@@ -661,7 +709,9 @@ def create_app(configfile=None):
     def view_results():
 
         dirpath = "output"
-        entries = (co2wui_fpath(dirpath, fn) for fn in os.listdir(co2wui_fpath(dirpath)))
+        entries = (
+            co2wui_fpath(dirpath, fn) for fn in os.listdir(co2wui_fpath(dirpath))
+        )
         entries = ((os.stat(path), path) for path in entries)
         entries = (
             (stat[ST_CTIME], path) for stat, path in entries if S_ISDIR(stat[ST_MODE])
@@ -885,7 +935,7 @@ def create_app(configfile=None):
         # Remove old output files
         previous = listdir_outputs("sync", "output")
         for f in previous:
-          os.remove(str(f))
+            os.remove(str(f))
 
         # Arguments
         kwargs = {
@@ -943,9 +993,7 @@ def create_app(configfile=None):
     def sync_download_result(timestr):
         synced = str(listdir_outputs("sync", "output")[0])
         synced_name = os.path.basename(synced)
-        return send_file(
-            synced, attachment_filename=synced_name, as_attachment=True
-        )
+        return send_file(synced, attachment_filename=synced_name, as_attachment=True)
 
     # Demo/download
     @app.route("/demo/download")
@@ -1012,7 +1060,7 @@ def create_app(configfile=None):
     @app.route("/conf/configuration-form")
     def configuration_form():
 
-        files = [ conf_fpath().name ] if conf_fpath().exists() else []
+        files = [conf_fpath().name] if conf_fpath().exists() else []
 
         return render_template(
             "layout.html",
@@ -1051,8 +1099,8 @@ def create_app(configfile=None):
 
     @app.route("/keys/keys-dir")
     def keys_dir():
-       webbrowser.open(osp.join('file:///' + str(_home_fpath()), 'keys'))
-       return render_template(
+        webbrowser.open(osp.join("file:///" + str(_home_fpath()), "keys"))
+        return render_template(
             "layout.html",
             action="keys_dir",
             data={
@@ -1068,8 +1116,8 @@ def create_app(configfile=None):
     @app.route("/keys/keys-form")
     def keys_form():
 
-        enc_keys = [ enc_keys_fpath().name ] if enc_keys_fpath().exists() else []
-        key_sign = [ key_sign_fpath().name ] if key_sign_fpath().exists() else []
+        enc_keys = [enc_keys_fpath().name] if enc_keys_fpath().exists() else []
+        key_sign = [key_sign_fpath().name] if key_sign_fpath().exists() else []
 
         return render_template(
             "layout.html",
@@ -1089,10 +1137,7 @@ def create_app(configfile=None):
     def add_key_file():
 
         upload_type = request.form.get("upload_type")
-        filepaths = {
-            "enc_keys": enc_keys_fpath(),
-            "key_sign": key_sign_fpath(),
-        }
+        filepaths = {"enc_keys": enc_keys_fpath(), "key_sign": key_sign_fpath()}
 
         fpath = filepaths.get(upload_type)
         if fpath.exists():
@@ -1106,10 +1151,7 @@ def create_app(configfile=None):
     def delete_key_file():
 
         upload_type = request.args.get("upload_type")
-        filepaths = {
-            "enc_keys": enc_keys_fpath(),
-            "key_sign": key_sign_fpath(),
-        }
+        filepaths = {"enc_keys": enc_keys_fpath(), "key_sign": key_sign_fpath()}
         fpath = filepaths.get(upload_type)
         fpath.unlink()
         return redirect("/keys/keys-form", code=302)
@@ -1167,11 +1209,13 @@ def create_app(configfile=None):
 
     return app
 
+
 def app_banner():
     print("Co2mpas GUI application is running on port " + os.environ["FLASK_RUN_PORT"])
     print("A browser should have been automatically launched with the correct address")
     print("If you aren't redirected automatically, please point your browser to:")
     print("http://localhost:" + os.environ["FLASK_RUN_PORT"])
+
 
 @click.group(cls=FlaskGroup, create_app=create_app)
 def cli():
@@ -1181,21 +1225,22 @@ def cli():
     webbrowser.open("http://localhost:" + os.environ["FLASK_RUN_PORT"])
     app_banner()
 
+
 if __name__ == "__main__":
     create_app().run(debug=True)
 
 # Bypass our friend flask cli in order to set the port
 port = get_running_port()
 
-if (port):
-  os.environ["FLASK_RUN_PORT"] = str(port)
-  webbrowser.open("http://localhost:" + os.environ["FLASK_RUN_PORT"])
-  app_banner()
-  exit()
-else:
-  port = get_free_port()
-  if (port):
+if port:
     os.environ["FLASK_RUN_PORT"] = str(port)
+    webbrowser.open("http://localhost:" + os.environ["FLASK_RUN_PORT"])
+    app_banner()
+    exit()
+else:
+    port = get_free_port()
+    if port:
+        os.environ["FLASK_RUN_PORT"] = str(port)
 
 save_running_port(os.environ["FLASK_RUN_PORT"])
 atexit.register(remove_port_file)
