@@ -49,6 +49,7 @@ from jinja2 import Environment, PackageLoader
 from ruamel import yaml
 from werkzeug.utils import secure_filename
 
+
 # Default port for running the server
 os.environ["FLASK_RUN_PORT"] = "8999"
 
@@ -1212,37 +1213,41 @@ def create_app(configfile=None):
     return app
 
 
-def app_banner():
-    print("Co2mpas GUI application is running on port " + os.environ["FLASK_RUN_PORT"])
-    print("A browser should have been automatically launched with the correct address")
-    print("If you aren't redirected automatically, please point your browser to:")
-    print("http://localhost:" + os.environ["FLASK_RUN_PORT"])
+def app_banner(port: int, was_app_running: bool):
+    from textwrap import dedent
+
+    return dedent(
+        f"""\
+        Co2mpas GUI application {"was already" if was_app_running else "is now"} running on port {port}.
+        A browser should have been automatically launched with the correct address
+        If you aren't redirected automatically, please point your browser to:
+            http://localhost:{port}"""
+    )
 
 
 @click.group(cls=FlaskGroup, create_app=create_app)
 def cli():
-    """Management script for the Co2gui application."""
+    """Launch script for the Co2gui application & browser window."""
+    # Bypass our friend flask cli in order to set the port
     # FIXME: read port from cli/configs
-    # TODO: option for the user to skip opening browser
-    webbrowser.open("http://localhost:" + os.environ["FLASK_RUN_PORT"])
-    app_banner()
+    port = get_running_port()
+    was_app_running = port is not None
 
+    if was_app_running:
+        os.environ["FLASK_RUN_PORT"] = str(port)
+        print(app_banner(port, was_app_running))
+        webbrowser.open(f"http://localhost:{port}")
 
-if __name__ == "__main__":
-    create_app().run(debug=True)
+        exit()
 
-# Bypass our friend flask cli in order to set the port
-port = get_running_port()
-
-if port:
-    os.environ["FLASK_RUN_PORT"] = str(port)
-    webbrowser.open("http://localhost:" + os.environ["FLASK_RUN_PORT"])
-    app_banner()
-    exit()
-else:
     port = get_free_port()
     if port:
         os.environ["FLASK_RUN_PORT"] = str(port)
 
-save_running_port(os.environ["FLASK_RUN_PORT"])
-atexit.register(remove_port_file)
+        save_running_port(os.environ["FLASK_RUN_PORT"])
+        atexit.register(remove_port_file)
+
+        print(app_banner(port, was_app_running))
+        webbrowser.open(f"http://localhost:{port}")
+    else:
+        raise AssertionError("Could not discover a free port to bind!")
