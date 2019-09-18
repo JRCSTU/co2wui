@@ -26,7 +26,6 @@ setup(
     },
     python_requires=">=3.6",
     install_requires=[
-        "atexit",
         "co2mpas",
         "Flask",
         "Flask-Babel",
@@ -36,7 +35,6 @@ setup(
         "Werkzeug",
         "click",
         "ruamel.yaml",
-        "socket",
         "syncing",
         "urllib",
     ],
