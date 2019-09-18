@@ -1,6 +1,7 @@
 import itertools
 import functools
 import re
+import sys
 from stat import S_ISREG, S_ISDIR, ST_CTIME, ST_MODE
 import webbrowser
 import multiprocessing
@@ -1245,3 +1246,10 @@ def cli():
 
         print(app_banner(port, was_app_running))
         webbrowser.open(f"http://localhost:{port}")
+
+
+## Hide Flask's startup warning if not used behind a separate WSGI server.
+# From: https://gist.github.com/jerblack/735b9953ba1ab6234abb43174210d356
+#
+fcli = sys.modules["flask.cli"]
+fcli.show_server_banner = lambda *x: None
