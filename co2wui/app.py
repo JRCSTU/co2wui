@@ -1,37 +1,35 @@
-import itertools
+import atexit
 import functools
-import re
-import sys
-from stat import S_ISREG, S_ISDIR, ST_CTIME, ST_MODE
-import webbrowser
-import multiprocessing
-import tempfile
+import gettext
+import io
+import itertools
 import logging
 import logging.config
-import time
-import io
+import multiprocessing
 import os
+import pickle
+import random
+import re
+import shutil
+import socket
+import sys
+import tempfile
+import time
+import urllib.request
+import webbrowser
+import zipfile
 from importlib import resources
 from os import path as osp
 from pathlib import Path
 from stat import S_ISDIR, S_ISREG, ST_CTIME, ST_MODE
-from typing import Union, List
+from typing import List, Union
 
-import atexit
 import click
 import requests
 import schedula as sh
 import syncing
-import gettext
-import pickle
-import random
-import socket
-import urllib.request
-import zipfile
-import shutil
 from babel import Locale
 from babel.support import Translations
-from co2mpas import __version__, dsp
 from flask import (
     Flask,
     Response,
@@ -43,13 +41,14 @@ from flask import (
     session,
     url_for,
 )
-from flask_session import Session
 from flask.cli import FlaskGroup
 from flask_babel import Babel
+from flask_session import Session
 from jinja2 import Environment, PackageLoader
 from ruamel import yaml
 from werkzeug.utils import secure_filename
 
+from co2mpas import __version__, dsp
 
 _ = gettext.gettext
 
