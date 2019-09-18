@@ -1236,7 +1236,7 @@ def cli():
 
         exit()
 
-    port = get_free_port()
+    port = get_free_port() or 8999
     if port:
         os.environ["FLASK_RUN_PORT"] = str(port)
 
@@ -1245,5 +1245,3 @@ def cli():
 
         print(app_banner(port, was_app_running))
         webbrowser.open(f"http://localhost:{port}")
-    else:
-        raise AssertionError("Could not discover a free port to bind!")
