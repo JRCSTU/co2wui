@@ -18,6 +18,7 @@ setup(
     description="WebUI for co2mpas",
     long_description=read("README.md"),
     keywords=["automotive", "vehicles", "simulator", "WLTP", "web-app"],
+    url="https://github.com/JRCSTU/co2wui",
     project_urls={
         "Documentation": "https://co2mpas.io/",
         "Sources": "https://github.com/JRCSTU/co2wui",
