@@ -148,47 +148,49 @@ def key_sign_fpath() -> Path:
 
 
 def get_running_port():
-    """Read a file containing the port number of the server and checks that
-       the port is actually open
+    """
+    Read ``~/co2mpas/server.port`` as plain text ignoring comments & check port belongs to co2wui
+
+    :return:
+        None if not found/failed to load
     """
     port = None
-    if osp.exists(port_fpath()):
+    lineno = 0
+    try:
+        #
+        with open(port_fpath(), "rt") as port_file:
+            for lineno, l in enumerate(port_file):
+                l = l.strip()
+                if not l or re.search(" *#", l):
+                    continue
+                port = int(l)
+    except Exception as ex:
+        log.debug(f"Could not read port-file({port_fpath()})@{lineno} due to: {ex}")
 
-        # Read port number from file
-        with open(port_fpath(), "rb") as port_file:
-            try:
-                port = pickle.load(port_file)
-            except:
-                return None
-
-        # If we have a port we check that it's served by CO2WUI
-        if port:
-
-            try:
-                # Check that another app is not running
-                signature = ""
-                code = urllib.request.urlopen(
-                    "http://localhost:" + str(port) + "/signature"
-                ).code
-                if code == 200:
-                    signature = urllib.request.urlopen(
-                        "http://localhost:" + str(port) + "/signature"
-                    ).read()
+    ## If we have a port we check that it's served by CO2WUI
+    #
+    if port:
+        try:
+            # Check that another app is not running
+            signature = ""
+            resp = urllib.request.urlopen(f"http://localhost:{port}/signature")
+            if resp.code == 200:
+                signature = resp.read()
 
                 if signature == b"CO2WUI":
                     return port
-
-            except:
-                return None
-
-    return None
+        except Exception as ex:
+            log.debug(f"Could not test-bind port({port}) due to: {ex}")
 
 
 def save_running_port(port):
     """Save the running port in a file
     """
-    with open(port_fpath(), "wb") as port_file:
-        pickle.dump(port, port_file)
+    from datetime import datetime
+
+    now = datetime.now().isoformat()
+    with open(port_fpath(), "wt") as port_file:
+        port_file.write(f"# Launched co2wui on {now}\n{port}\n")
 
 
 def get_free_port():
