@@ -2,7 +2,7 @@
 					<div class="row">				
 						<!-- Single col -->
 						<section class="col-lg-8 connectedSortable">
-							<div title="Choose an input file and click “confirm”. ">
+							<div>
 							
 							<h1>{{ data.breadcrumb[-1] }}</h1>
 													
@@ -106,17 +106,23 @@
 								<!-- /.box-body -->
 								<div class="box-footer"> 
 
-									<div id="upload-form" class="pull-right">
-										<form id="fileupload" action="/run/add-file" method="POST" enctype="multipart/form-data">
+									<div class="form-group col-md-5 pull-right">
+										<form id="add-file-form" action="/run/add-file" enctype="multipart/form-data" method="post">
 											<!-- The fileupload-buttonbar contains buttons to add/delete files and start/cancel the upload -->
 											<div class="row fileupload-buttonbar">
-												<div class="col-lg-7">
-													<!-- The fileinput-button span is used to style the file input field as button -->
-													<span class="btn btn-info fileinput-button">
-														<i class="glyphicon glyphicon-plus"></i>
-														<span>Choose input files...</span>
-														<input type="file" name="files[]" multiple />
-													</span>
+												<div class="col-lg-12">
+													<div>
+														<div class="input-group">
+																<input type="text" name="files[]" id="file_path_xhr" class="form-control" placeholder="Browse...">
+																<span class="input-group-btn">
+																		<button class="btn btn-default" type="button" id="file_browser_xhr">
+																		<i class="fa fa-plus"></i> {{ _("Choose one or more input files") }}</button>
+																</span>
+
+														</div>
+														<input type="file" class="hidden" id="file_xhr" name="files[]" multiple>
+													</div>
+
 													<span class="fileupload-process"></span>
 												</div>
 												<!-- The global progress state -->
@@ -139,7 +145,7 @@
 								</div>	
 <script>
 $(function () {
-    $('#fileupload').fileupload({
+    $('#add-file-form').fileupload({
         dataType: 'json',
         done: function (e, data) {
 					$('#uploads-list').load('/run/uploads-list');

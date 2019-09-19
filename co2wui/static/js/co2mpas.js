@@ -1,5 +1,20 @@
 /* File upload functions */
 
+/* Non submitting file uploader */
+$('#file_xhr').change(function(){
+	$('#file_path_xhr').val($(this).val());
+});
+
+/* Generic file uploader */
+$('#file_browser_xhr').click(function(e){
+	e.preventDefault();
+	$('#file_xhr').click();
+});
+
+$('#file_path_xhr').click(function(){
+	$('#file_browser_xhr').click();
+});
+
 /* Generic file uploader */
 $('#file_browser').click(function(e){		
 	e.preventDefault();		
