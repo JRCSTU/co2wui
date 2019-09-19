@@ -163,7 +163,9 @@ def get_running_port():
                     continue
                 port = int(l)
     except Exception as ex:
-        log.debug(f"Could not read port-file({port_fpath()})@{lineno} due to: {ex}")
+        log.debug(
+            "Could not read port-file(%s)@%s due to: %s", port_fpath(), lineno, ex
+        )
 
     ## If we have a port we check that it's served by CO2WUI
     #
@@ -178,7 +180,7 @@ def get_running_port():
                 if signature == b"CO2WUI":
                     return port
         except Exception as ex:
-            log.debug(f"Could not test-bind port({port}) due to: {ex}")
+            log.debug("Could not test-bind port(%s) due to: %s", port, ex)
 
 
 def save_running_port(port):
