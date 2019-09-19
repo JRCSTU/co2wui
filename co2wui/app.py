@@ -11,7 +11,7 @@ import pickle
 import random
 import re
 import shutil
-import simplejson
+import json
 import socket
 import sys
 import tempfile
@@ -708,7 +708,7 @@ def create_app(configfile=None):
         f = request.files['files[]']
         f.save(str(co2wui_fpath("input", secure_filename(f.filename))))
         files = {"file": f.read()}
-        return simplejson.dumps({"files": {"name": f.filename}})
+        return json.dumps({"files": {"name": f.filename}})
 
     @app.route("/run/delete-file", methods=["GET"])
     def delete_file():
