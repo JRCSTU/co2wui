@@ -61,10 +61,10 @@
 									</section>
 								</div>
 								<br>
-								
+
 								<!-- /.box-header -->
 								<!-- form start -->
-								<div class="box-body">
+								<div id="uploads-list" class="box-body">
 									<div class="box-body">               	
 										{% if not data.inputs|length %}
 										<div>
@@ -102,29 +102,52 @@
 										{% endif %}
 									</div>									
 								</div>
-								
+
 								<!-- /.box-body -->
 								<div class="box-footer"> 
-									<!-- <a href="#" class="btn btn-primary pull-right">Confirm</a> -->
-									<div class="form-group col-md-5 pull-right">
-										<form id="add-file-form" action="/run/add-file" enctype="multipart/form-data" method="post">
-											<div>
-													<div class="input-group">
-															<input type="text" name="file" id="file_path" class="form-control" placeholder="Browse...">
-															<span class="input-group-btn">
-																	<button class="btn btn-default" type="button" id="file_browser">
-																	<i class="fa fa-plus"></i> {{ _("Choose an input file") }}</button>																	
-															</span>
-															
+
+									<div id="upload-form" class="pull-right">
+										<form id="fileupload" action="/run/add-file" method="POST" enctype="multipart/form-data">
+											<!-- The fileupload-buttonbar contains buttons to add/delete files and start/cancel the upload -->
+											<div class="row fileupload-buttonbar">
+												<div class="col-lg-7">
+													<!-- The fileinput-button span is used to style the file input field as button -->
+													<span class="btn btn-info fileinput-button">
+														<i class="glyphicon glyphicon-plus"></i>
+														<span>Choose input files...</span>
+														<input type="file" name="files[]" multiple />
+													</span>
+													<span class="fileupload-process"></span>
+												</div>
+												<!-- The global progress state -->
+												<div class="col-lg-5 fileupload-progress fade">
+													<!-- The global progress bar -->
+													<div id="progress" class="progress progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100">
+														<div class="progress-bar progress-bar-success" style="width:0%;"></div>
 													</div>
-													<input type="file" class="hidden" id="file" name="file">
+													<!-- The extended global progress state -->
+													<div class="progress-extended">&nbsp;</div>
+												</div>
 											</div>
+											<!-- The table listing the files available for upload/download -->
+											<table role="presentation" class="table table-striped">
+												<tbody class="files"></tbody>
+											</table>
 										</form>
 									</div>
-											
+
 								</div>	
-								{% if data.inputs|length %}
-								<div class="box-footer">
+<script>
+$(function () {
+    $('#fileupload').fileupload({
+        dataType: 'json',
+        done: function (e, data) {
+					$('#uploads-list').load('/run/uploads-list');
+        }
+    })
+});
+</script>
+								<div id="simulation-button" class="box-footer" style="display: {% if data.inputs|length %}block{%else%}none{%endif%};">
 									<form action="/run/simulation">
 										<input type="hidden" name="declaration_mode" id="declaration_mode" value="">
 										<input type="hidden" name="hard_validation" id="hard_validation" value="">
@@ -148,7 +171,6 @@
 										</div>
 									</form>
 								</div>
-								{% endif %}
 								
 							</div>
 							<!-- /.box -->

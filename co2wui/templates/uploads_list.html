@@ -1,0 +1,46 @@
+
+									<div class="box-body">               	
+										{% if not data.inputs|length %}
+										<div>
+											<p>No input files have been uploaded</p>
+										</div>
+										{% else %}
+
+											<div class="box-header with-border">
+												<h3 class="box-title">{{ _("Your files ready to be processed") }}:</h3>
+											</div>
+											<!-- /.box-header -->
+											<div class="box-body">
+												<table class="table table-bordered">
+													<tbody><tr>
+														<th style="width: 10px">#</th>
+														<th>{{ _("Filename") }}</th>														
+														<th style="width: 40px">&nbsp;</th>
+													</tr>
+													{% for file in data.inputs %}
+													<tr>
+														<td>{{loop.index}}.</td>
+														<td>{{file}}</td>														
+														<td>
+															<form action="/run/delete-file" method="get">
+																<input type="hidden" name="fn" value="{{loop.index}}">
+																<button id="delete-button" class="btn btn-sm btn-danger"><i class="glyphicon glyphicon-trash"></i> {{ _("Delete") }}</button>
+															</form>
+														</td>
+													</tr>										
+													{% endfor %}
+												</tbody></table>
+											</div>
+											<!-- /.box-body -->
+
+										{% endif %}
+									</div>
+	
+<script>
+{% if data.inputs|length %};
+	$('#simulation-button').show();
+{% else %}
+	$('#simulation-button').hide();
+{% endif %}
+</script>
+											

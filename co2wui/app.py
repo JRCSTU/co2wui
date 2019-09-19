@@ -11,6 +11,7 @@ import pickle
 import random
 import re
 import shutil
+import simplejson
 import socket
 import sys
 import tempfile
@@ -504,6 +505,18 @@ def create_app(configfile=None):
             },
         )
 
+    @app.route("/run/uploads-list")
+    def uploads_list():
+        inputs = [f.name for f in listdir_inputs("input")]
+        return render_template(
+            "ajax.html",
+            action="uploads_list",
+            data={
+                "inputs": inputs,
+                "ta_enabled": ta_enabled(),
+            },
+        )
+
     @app.route("/run/view-summary/<runid>")
     def view_summary(runid):
         """Show a modal dialog with a execution's summary formatted in a table
@@ -692,10 +705,10 @@ def create_app(configfile=None):
 
     @app.route("/run/add-file", methods=["POST"])
     def add_file():
-        f = request.files["file"]
+        f = request.files['files[]']
         f.save(str(co2wui_fpath("input", secure_filename(f.filename))))
         files = {"file": f.read()}
-        return redirect("/run/simulation-form", code=302)
+        return simplejson.dumps({"files": {"name": f.filename}})
 
     @app.route("/run/delete-file", methods=["GET"])
     def delete_file():
