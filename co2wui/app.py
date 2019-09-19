@@ -1079,11 +1079,41 @@ def create_app(configfile=None):
 
     @app.route("/plot/model-graph")
     def plot_model_graph():
-        dsp(
-            dict(plot_model=True, cache_folder="cache", host="127.0.0.1", port=4999),
-            ["plot", "done"],
-        )
-        return ""
+        """
+        CLUDGE to launch plots-server from this flask server.
+        
+        Flask's startup cmd sets `FLASK_RUN_FROM_CLI` env-var to ``'true'``, but
+        but then :meth:`app.__init__()` will prevent launching a another flask server,
+        with this warning::
+
+            Silently ignoring app.run() because the application is run 
+            from the flask command line executable.  
+
+        We abuse this variable to store the port (and stop it from being ``'true'``).
+        """
+
+        port = os.environ.get("FLASK_RUN_FROM_CLI")
+        try:
+            port = int(port)
+            # Plots-server had already been launched.
+        except Exception as ex:
+            port = get_free_port()
+            log.debug(
+                "Expected failure parsing FLASK_RUN_FROM_CLI env-var as port-number"
+                " due to : %s\n  Will now start plots-server in %s...",
+                ex,
+                port,
+            )
+            os.environ["FLASK_RUN_FROM_CLI"] = str(port)
+            dsp(
+                dict(
+                    plot_model=True, cache_folder="cache", host="127.0.0.1", port=port
+                ),
+                ["plot", "done"],
+            )
+
+        ## FIXME: render this as a link in "Show model graph" page.
+        return f"localhost:{port}/"
 
     @app.route("/conf/configuration-form")
     def configuration_form():
