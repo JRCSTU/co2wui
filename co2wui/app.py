@@ -994,6 +994,20 @@ def create_app(configfile=None):
         synced_name = os.path.basename(synced)
         return send_file(synced, attachment_filename=synced_name, as_attachment=True)
 
+    @app.route("/demo/download-demo-form")
+    def download_demo_form():
+        return render_template(
+            "layout.html",
+            action="demo_download_form",
+            data={
+                "breadcrumb": ["Co2mpas", _("Download demo")],
+                "props": {
+                    "active": {"run": "active", "sync": "", "doc": "", "expert": ""}
+                },
+                "texts": co2wui_texts,
+            },
+        )
+
     # Demo/download
     @app.route("/demo/download")
     def demo_download():
