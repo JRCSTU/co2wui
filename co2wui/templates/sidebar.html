@@ -39,7 +39,11 @@
             </span>
           </a>
           <ul class="treeview-menu">
-            <li><a href="#" onclick="launch_plot(); return false;"><i class="fa fa-download"></i> {{ _("Show model graph") }}</a></li>
+{% if not data.globals.plot_port %}
+            <li><a href="/plot/launched"><i class="fa fa-download"></i> {{ _("Show model graph") }}</a></li>
+{% else %}
+						<li><a target=_blank href="http://localhost:{{ data.globals.plot_port }}"><i class="fa fa-download"></i> {{ _("Show model graph") }}</a></li>
+{% endif %}
             <li><a href="/conf/configuration-form"><i class="fa fa-upload"></i> {{ _("Co2mpas configuration") }}</a></li>
 						<li><a href="/keys/keys-form"><i class="fa fa-key"></i> {{ _("Key management") }}</a></li>
           </ul>

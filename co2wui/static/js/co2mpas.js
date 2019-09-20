@@ -179,15 +179,6 @@ function run_synchronisation() {
 	});
 }
 
-function launch_plot() {
-	$('#content-outer').load("/plot/launched", function () { $( window ).resize() })
-	$.ajax({
-		url: "/plot/model-graph",
-		method: "get",
-		context: document.body
-	})
-}
-
 function load_summary(result_name) {
 	$('.modal-dialog').css("width", "85%");
 	$('#modal-content').load('/run/view-summary/' + result_name);

@@ -70,7 +70,6 @@ progress_bar = {
     "write_to_excel": 99,
 }
 
-
 def ensure_working_folders():
     for p in (
         ("keys",),
@@ -416,6 +415,9 @@ def create_app(configfile=None):
         co2wui_texts["version"] = version
         co2wui_texts["co2mpas_version"] = CO2MPAS_VERSION
 
+    # Global variable for plot server port
+    co2wui_globals = { "plot_port": None }
+
     @app.route("/")
     def index():
 
@@ -430,6 +432,7 @@ def create_app(configfile=None):
                 "props": {"active": {"run": "", "sync": "", "doc": "", "expert": ""}},
                 "nohints": nohints,
                 "texts": co2wui_texts,
+                "globals": co2wui_globals,
             },
         )
 
@@ -448,6 +451,7 @@ def create_app(configfile=None):
                     "active": {"run": "active", "sync": "", "doc": "", "expert": ""}
                 },
                 "texts": co2wui_texts,
+                "globals": co2wui_globals,
             },
         )
 
@@ -503,6 +507,7 @@ def create_app(configfile=None):
                 "inputs": inputs,
                 "ta_enabled": ta_enabled(),
                 "texts": co2wui_texts,
+                "globals": co2wui_globals,
             },
         )
 
@@ -666,6 +671,7 @@ def create_app(configfile=None):
                 "stopped": stopped,
                 "counter": counter,
                 "texts": co2wui_texts,
+                "globals": co2wui_globals,
                 "progress": (
                     (num_processed * (100 / int(round(len(files)))))
                     + int(round((progress_bar[phases[len(phases) - 1]] / len(files))))
@@ -743,6 +749,7 @@ def create_app(configfile=None):
                 },
                 "results": reversed(results),
                 "texts": co2wui_texts,
+                "globals": co2wui_globals,
             },
         )
 
@@ -800,6 +807,7 @@ def create_app(configfile=None):
                     "active": {"run": "", "sync": "active", "doc": "", "expert": ""}
                 },
                 "texts": co2wui_texts,
+                "globals": co2wui_globals,
                 "title": "Data synchronisation",
             },
         )
@@ -902,6 +910,7 @@ def create_app(configfile=None):
                 "timestamp": time.time(),
                 "inputs": inputs,
                 "texts": co2wui_texts,
+                "globals": co2wui_globals,
             },
         )
 
@@ -1037,8 +1046,11 @@ def create_app(configfile=None):
 
     @app.route("/plot/launched")
     def plot_launched():
+        if (not co2wui_globals["plot_port"]):
+          co2wui_globals["plot_port"] = get_free_port()
+
         return render_template(
-            "content.html",
+            "layout.html",
             action="launch_plot",
             data={
                 "breadcrumb": ["Co2mpas", "Plot launched"],
@@ -1047,6 +1059,7 @@ def create_app(configfile=None):
                 },
                 "title": "Plot launched",
                 "texts": co2wui_texts,
+                "globals": co2wui_globals,
             },
         )
 
@@ -1070,7 +1083,7 @@ def create_app(configfile=None):
             port = int(port)
             # Plots-server had already been launched.
         except Exception as ex:
-            port = get_free_port()
+            port = co2wui_globals["plot_port"]
             log.debug(
                 "Expected failure parsing FLASK_RUN_FROM_CLI env-var as port-number"
                 " due to : %s\n  Will now start plots-server in %s...",
@@ -1086,7 +1099,7 @@ def create_app(configfile=None):
             )
 
         ## FIXME: render this as a link in "Show model graph" page.
-        return f"localhost:{port}/"
+        return ''
 
     @app.route("/conf/configuration-form")
     def configuration_form():
@@ -1109,6 +1122,7 @@ def create_app(configfile=None):
                 "title": "Configuration form",
                 "inputs": files,
                 "texts": co2wui_texts,
+                "globals": co2wui_globals,
             },
         )
 
@@ -1141,6 +1155,7 @@ def create_app(configfile=None):
                 },
                 "title": "Co2mpas keys",
                 "texts": co2wui_texts,
+                "globals": co2wui_globals,
             },
         )
 
@@ -1161,6 +1176,7 @@ def create_app(configfile=None):
                 "enc_keys": enc_keys,
                 "key_sign": key_sign,
                 "texts": co2wui_texts,
+                "globals": co2wui_globals,
             },
         )
 
@@ -1198,6 +1214,7 @@ def create_app(configfile=None):
                 "title": "Feature not implemented",
                 "message": "Please refer to future versions of the application or contact xxxxxxx@xxxxxx.europa.eu for information.",
                 "texts": co2wui_texts,
+                "globals": co2wui_globals,
             },
         )
 
@@ -1235,6 +1252,7 @@ def create_app(configfile=None):
                 },
                 "title": "Contact us",
                 "texts": co2wui_texts,
+                "globals": co2wui_globals,
             },
         )
 
