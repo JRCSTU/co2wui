@@ -74,7 +74,7 @@ progress_bar = {
 
 def ensure_working_folders():
     for p in (
-        ("keys",),
+        ("DICE_KEYS",),
         ("input",),
         ("output",),
         ("sync", "input"),
@@ -138,12 +138,12 @@ def conf_fpath() -> Path:
 
 @functools.lru_cache()
 def enc_keys_fpath() -> Path:
-    return co2wui_fpath("keys") / "dice.co2mpas.keys"
+    return co2wui_fpath("DICE_KEYS") / "dice.co2mpas.keys"
 
 
 @functools.lru_cache()
 def key_sign_fpath() -> Path:
-    return co2wui_fpath("keys") / "sign.co2mpas.key"
+    return co2wui_fpath("DICE_KEYS") / "sign.co2mpas.key"
 
 
 def get_running_port():
