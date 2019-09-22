@@ -1060,6 +1060,7 @@ def create_app(configfile=None):
                     "active": {"run": "active", "sync": "", "doc": "", "expert": ""}
                 },
                 "texts": co2wui_texts,
+                "globals": co2wui_globals,
             },
         )
 
