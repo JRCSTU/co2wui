@@ -410,8 +410,6 @@ def create_app(configfile=None):
     with resources.open_text(i18n, "texts-en.yaml") as stream:
         co2wui_texts = yaml.safe_load(stream)
 
-    ensure_working_folders()
-
     with open(os.path.join(app.root_path, "VERSION")) as version_file:
         version = version_file.read().strip()
         co2wui_texts["version"] = version
@@ -1335,6 +1333,7 @@ def cli():
     """Launch script for the Co2gui application & browser window."""
     # Bypass our friend flask cli in order to set the port
     # FIXME: read port from cli/configs
+    ensure_working_folders()
     port = get_running_port()
     was_app_running = port is not None
 
