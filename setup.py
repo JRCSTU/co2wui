@@ -36,7 +36,7 @@ setup(
         "click",
         "ruamel.yaml",
         "syncing",
-        "urllib",
+        "urllib3",
     ],
     extras_require={
         "ta": ["co2mpas_dice"],
