@@ -36,6 +36,7 @@
 											{% for file in result.files %}
 											<li><a href="/run/download-result/{{result.name}}/{{loop.index}}">{{file}}</a></li>									
 											{% endfor %}
+											<li><i class="fa fa-file-archive-o"></i> <a href="/run/download-all/{{result.name}}">Full archive</a></li>
 									</td>
 									<td style="text-align: center;"><input type="checkbox" class="run-delete" name="select-{{result.name}}"></td>
                 </tr>

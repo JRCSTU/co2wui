@@ -21,6 +21,7 @@ import webbrowser
 import zipfile
 from importlib import resources
 from os import path as osp
+from os.path import basename
 from pathlib import Path
 from stat import S_ISDIR, S_ISREG, ST_CTIME, ST_MODE
 from typing import List, Union
@@ -782,6 +783,36 @@ def create_app(configfile=None):
         iofile.seek(0)
         return send_file(
             iofile, attachment_filename=files[int(fnum) - 1].name, as_attachment=True
+        )
+
+    @app.route("/run/download-all/<runid>")
+    def download_all(runid):
+
+        of = next(tempfile._get_candidate_names())
+        co2wui_fpath(of).mkdir(parents=True, exist_ok=True)
+
+        # Create zip archive on the of all the result
+        zip_subdir = of
+        iofile = io.BytesIO()
+        zf = zipfile.ZipFile(iofile, mode="w", compression=zipfile.ZIP_DEFLATED)
+
+        files = listdir_outputs("output", runid)
+
+        # Adds demo files to archive
+        for f in files:
+            # Add file, at correct path
+            zf.write(osp.abspath(osp.join(of, f)), basename(f))
+
+        # Close archive
+        zf.close()
+
+        # Remove temporary files
+        shutil.rmtree(co2wui_fpath(of))
+
+        # Output zip file
+        iofile.seek(0)
+        return send_file(
+            iofile, attachment_filename="co2mpas-result-" + runid + ".zip", as_attachment=True
         )
 
     @app.route("/run/delete-results", methods=["POST"])
