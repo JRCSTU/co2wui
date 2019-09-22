@@ -65,3 +65,7 @@ ul.treeview-menu > li > a {
 		padding-bottom: 0;
 	}
 }
+
+.tooltip-inner {
+ text-align: left;
+}
