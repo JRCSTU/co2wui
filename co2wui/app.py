@@ -242,7 +242,7 @@ def humanised(summary):
 
 def ta_enabled():
     """Return true if all conditions for TA mode are met """
-    return enc_keys_fpath().exists() and key_sign_fpath().exists()
+    return enc_keys_fpath().exists()
 
 
 def colorize(str):
