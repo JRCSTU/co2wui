@@ -1179,6 +1179,7 @@ def create_app(configfile=None):
                         "expert": "active",
                     }
                 },
+                "timestamp": time.time(),
                 "title": "Configuration form",
                 "inputs": files,
                 "texts": co2wui_texts,
@@ -1294,8 +1295,8 @@ def create_app(configfile=None):
         return redirect("/conf/configuration-form", code=302)
 
     # Demo/download
-    @app.route("/conf/download")
-    def conf_download():
+    @app.route("/conf/download/<timestr>")
+    def conf_download(timestr):
         of = conf_fpath()
 
         return send_file(of.open("rb"), attachment_filename=of.name, as_attachment=True)
