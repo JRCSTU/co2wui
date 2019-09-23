@@ -355,6 +355,9 @@ def run_process(args):
         "type_approval_mode": bool(args.get("tamode")),
     }
 
+    if (conf_fpath().exists()):
+      kwargs["model_conf"] = conf_fpath()
+
     with open(
         co2wui_fpath("output", str(process.pid), "header.dat"), "wb"
     ) as header_file:
