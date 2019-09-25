@@ -39,8 +39,10 @@
 <script>
 {% if data.inputs|length %};
 	$('#simulation-button').show();
+	$('#advanced-block').show();
 {% else %}
 	$('#simulation-button').hide();
+	$('#advanced-block').hide();
 {% endif %}
 	$('#file_path_xhr').val('')
 </script>
