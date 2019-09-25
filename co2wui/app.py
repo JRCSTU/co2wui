@@ -356,7 +356,7 @@ def run_process(args, sid):
         "type_approval_mode": bool(args.get("tamode")),
     }
 
-    if (conf_fpath().exists()):
+    if (conf_fpath().exists() and bool(args.get("custom_conf"))):
       kwargs["model_conf"] = conf_fpath()
 
     with open(
@@ -503,6 +503,9 @@ def create_app(configfile=None):
                 code=302,
             )
 
+        # If configuration file exists
+        conf = [conf_fpath().name] if conf_fpath().exists() else []
+
         inputs = [f.name for f in listdir_inputs("input")]
         return render_template(
             "layout.html",
@@ -513,6 +516,7 @@ def create_app(configfile=None):
                     "active": {"run": "active", "sync": "", "doc": "", "expert": ""}
                 },
                 "inputs": inputs,
+                "conf": conf,
                 "ta_enabled": ta_enabled(),
                 "texts": co2wui_texts,
                 "globals": co2wui_globals,
@@ -1287,11 +1291,11 @@ def create_app(configfile=None):
             },
         )
 
-    @app.route("/conf/generate")
-    def conf_generate():
+    @app.route("/conf/template")
+    def conf_template():
 
-        # Conf file name
-        of = conf_fpath()
+        # Temp file name
+        of = next(tempfile._get_candidate_names())
 
         # Input parameters
         inputs = {"output_file": of}
@@ -1300,9 +1304,24 @@ def create_app(configfile=None):
         d = dsp.register()
         ret = d.dispatch(inputs, ["conf", "done"])
 
-        return redirect("/conf/configuration-form", code=302)
+        # Read from file
+        data = None
+        with open(of, "rb") as conf:
+            data = conf.read()
 
-    # Demo/download
+        # Delete files
+        os.remove(of)
+
+        # Output xls file
+        iofile = io.BytesIO(data)
+        iofile.seek(0)
+        return send_file(
+            iofile,
+            attachment_filename="conf.yaml",
+            as_attachment=True,
+        )
+
+    # Conf/download
     @app.route("/conf/download/<timestr>")
     def conf_download(timestr):
         of = conf_fpath()

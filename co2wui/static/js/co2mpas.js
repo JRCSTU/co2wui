@@ -133,7 +133,17 @@ $('#chk_enable_selector').change(function () {
 	else {
 			$('#enable_selector').val(null);
 	}
-});	
+});
+
+$('#chk_custom_conf').change(function () {
+
+	if ($('#chk_custom_conf').is(':checked')) {
+			$('#custom_conf').val('true');
+	}
+	else {
+			$('#custom_conf').val(null);
+	}
+});
 
 /* Synchronisation form advanced options */
 $('#option_reference_data_set').change(function () {					

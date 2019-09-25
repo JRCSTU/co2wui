@@ -59,6 +59,15 @@
 														</label>
 
 													</div>
+													{% if data.conf|length %}
+													<div class="checkbox">
+														<label>
+															<input type="checkbox" id="chk_custom_conf">
+															{{ _("Use custom configuration file") }} <i data-toggle="tooltip" data-placement="right" title="{{ data.texts['run']['options']['custom conf file'] | safe }}" class="fa fa-question-circle co2-help"></i></h2>
+														</label>
+
+													</div>
+													{% endif %}
 											</div>
 											</div>
 										</section>
@@ -155,6 +164,7 @@ $(function () {
 										<input type="hidden" name="hard_validation" id="hard_validation" value="">
 										<input type="hidden" name="enable_selector" id="enable_selector" value="">
 										<input type="hidden" name="only_summary" id="only_summary" value="">
+										<input type="hidden" name="custom_conf" id="custom_conf" value="">
 										<div class="row">										
 											<div class="col-xs-12 col-md-6">
 												<label class="pull-right">
