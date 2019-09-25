@@ -1205,7 +1205,7 @@ def create_app(configfile=None):
 
     @app.route("/keys/keys-dir")
     def keys_dir():
-        webbrowser.open(osp.join("file:///" + str(_home_fpath()), "keys"))
+        webbrowser.open(osp.join("file:///" + str(_home_fpath()), "DICE_KEYS"))
         return render_template(
             "layout.html",
             action="keys_dir",
