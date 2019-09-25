@@ -316,26 +316,27 @@ def register_logger(kw):
     return d
 
 
-def run_process(args):
+def run_process(args, sid):
     """Run the simulation process in a thread"""
 
     # Pick current thread
     process = multiprocessing.current_process()
+    run_id = '-'.join([sid, str(process.pid)])
 
     # Create output directory for this execution
-    output_folder = co2wui_fpath("output", str(process.pid))
+    output_folder = co2wui_fpath("output", run_id)
     os.makedirs(output_folder or ".", exist_ok=True)
 
     # File list
     files = listdir_inputs("input")
     with open(
-        co2wui_fpath("output", str(process.pid), "files.dat"), "wb"
+        co2wui_fpath("output", run_id, "files.dat"), "wb"
     ) as files_list:
         pickle.dump(files, files_list)
 
     # Dedicated logging for this run
     fileh = logging.FileHandler(
-        co2wui_fpath("output", str(process.pid), "logfile.txt"), "a"
+        co2wui_fpath("output", run_id, "logfile.txt"), "a"
     )
     logger = logging.getLogger()
     logger.setLevel(logging.INFO)
@@ -359,7 +360,7 @@ def run_process(args):
       kwargs["model_conf"] = conf_fpath()
 
     with open(
-        co2wui_fpath("output", str(process.pid), "header.dat"), "wb"
+        co2wui_fpath("output", run_id, "header.dat"), "wb"
     ) as header_file:
         pickle.dump(kwargs, header_file)
 
@@ -384,7 +385,7 @@ def run_process(args):
 
     ret = d.dispatch(inputs, ["done", "run", "core_model"])
     with open(
-        co2wui_fpath("output", str(process.pid), "result.dat"), "wb"
+        co2wui_fpath("output", run_id, "result.dat"), "wb"
     ) as summary_file:
         pickle.dump(ret["summary"], summary_file)
     return ""
@@ -491,6 +492,10 @@ def create_app(configfile=None):
     @app.route("/run/simulation-form")
     def simulation_form():
 
+        # Create session id if it doesn't exist
+        if not "sid" in session.keys():
+          session["sid"] = next(tempfile._get_candidate_names())
+
         if ("active_pid" in session) and (session["active_pid"] is not None):
             return redirect(
                 "/run/progress?layout=layout&counter=999&id="
@@ -555,7 +560,7 @@ def create_app(configfile=None):
     @app.route("/run/simulation")
     def run_simulation():
 
-        process = multiprocessing.Process(target=run_process, args=(request.args,))
+        process = multiprocessing.Process(target=run_process, args=(request.args,session["sid"],))
         process.start()
         id = process.pid
         session["active_pid"] = str(id)
@@ -576,6 +581,7 @@ def create_app(configfile=None):
 
         # Process id
         process_id = request.args.get("id")
+        run_id = '-'.join([session["sid"], process_id])
 
         # Wait counter... if not started after X then error.
         # This is required due to a latency when launching a new
@@ -586,10 +592,10 @@ def create_app(configfile=None):
 
         # Read the list of input files
         files = []
-        if osp.exists(co2wui_fpath("output", process_id, "files.dat")):
+        if osp.exists(co2wui_fpath("output", run_id, "files.dat")):
             started = True
             with open(
-                co2wui_fpath("output", process_id, "files.dat"), "rb"
+                co2wui_fpath("output", run_id, "files.dat"), "rb"
             ) as files_list:
                 try:
                     files = pickle.load(files_list)
@@ -598,9 +604,9 @@ def create_app(configfile=None):
 
         # Read the header containing run information
         header = {}
-        if osp.exists(co2wui_fpath("output", process_id, "header.dat")):
+        if osp.exists(co2wui_fpath("output", run_id, "header.dat")):
             with open(
-                co2wui_fpath("output", process_id, "header.dat"), "rb"
+                co2wui_fpath("output", run_id, "header.dat"), "rb"
             ) as header_file:
                 try:
                     header = pickle.load(header_file)
@@ -611,13 +617,13 @@ def create_app(configfile=None):
         page = "run_progress"
 
         # Simulation is "done" if there's a result file
-        if osp.exists(co2wui_fpath("output", process_id, "result.dat")):
+        if osp.exists(co2wui_fpath("output", run_id, "result.dat")):
             done = True
             page = "run_complete"
             session["active_pid"] = None
 
         # Get the summary of the execution (if ready)
-        summary = get_summary(process_id)
+        summary = get_summary(run_id)
         result = "KO" if (summary is None or len(summary[0].keys()) <= 2) else "OK"
 
         # Result is KO if not started and counter > 1
@@ -641,8 +647,8 @@ def create_app(configfile=None):
         # Get the log file
         log = ""
         loglines = []
-        if osp.exists(co2wui_fpath("output", process_id, "logfile.txt")):
-            with open(co2wui_fpath("output", process_id, "logfile.txt")) as f:
+        if osp.exists(co2wui_fpath("output", run_id, "logfile.txt")):
+            with open(co2wui_fpath("output", run_id, "logfile.txt")) as f:
                 loglines = f.readlines()
         else:
             loglines = ["Waiting for data..."]
@@ -668,8 +674,8 @@ def create_app(configfile=None):
         # Collect result files
         results = []
         if not (summary is None or len(summary[0].keys()) <= 2):
-            output_files = [f.name for f in listdir_outputs("output", process_id)]
-            results.append({"name": process_id, "files": output_files})
+            output_files = [f.name for f in listdir_outputs("output", run_id)]
+            results.append({"name": run_id, "files": output_files})
 
         # Render page progress/complete
         return render_template(
@@ -681,6 +687,7 @@ def create_app(configfile=None):
                     "active": {"run": "active", "sync": "", "doc": "", "expert": ""}
                 },
                 "process_id": process_id,
+                "run_id": run_id,
                 "log": log,
                 "result": result,
                 "stopped": stopped,
@@ -820,8 +827,9 @@ def create_app(configfile=None):
     def delete_results():
 
         for k in request.form.keys():
-            if re.match(r"select-[0-9]+", k):
-                runid = k.rpartition("-")[2]
+            found = re.match(r"^select\-(.+?\-[0-9]+)$", k)
+            if found:
+                runid = found.group(1)
                 shutil.rmtree(co2wui_fpath("output", runid))
 
         return redirect("/run/view-results", code=302)
