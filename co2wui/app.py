@@ -1215,67 +1215,6 @@ def create_app(configfile=None):
         fpath.unlink()
         return redirect("/conf/configuration-form", code=302)
 
-    @app.route("/keys/keys-dir")
-    def keys_dir():
-        webbrowser.open(osp.join("file:///" + str(_home_fpath()), "DICE_KEYS"))
-        return render_template(
-            "layout.html",
-            action="keys_dir",
-            data={
-                "breadcrumb": ["Co2mpas", "Co2mpas keys"],
-                "props": {
-                    "active": {"run": "", "sync": "", "doc": "", "expert": "active"}
-                },
-                "title": "Co2mpas keys",
-                "texts": co2wui_texts,
-                "globals": co2wui_globals,
-            },
-        )
-
-    @app.route("/keys/keys-form")
-    def keys_form():
-
-        enc_keys = [enc_keys_fpath().name] if enc_keys_fpath().exists() else []
-        key_sign = [key_sign_fpath().name] if key_sign_fpath().exists() else []
-
-        return render_template(
-            "layout.html",
-            action="keys_form",
-            data={
-                "breadcrumb": ["Co2mpas", _("Key management")],
-                "props": {
-                    "active": {"run": "", "sync": "", "doc": "", "expert": "active"}
-                },
-                "enc_keys": enc_keys,
-                "key_sign": key_sign,
-                "texts": co2wui_texts,
-                "globals": co2wui_globals,
-            },
-        )
-
-    @app.route("/keys/add-key-file", methods=["POST"])
-    def add_key_file():
-
-        upload_type = request.form.get("upload_type")
-        filepaths = {"enc_keys": enc_keys_fpath(), "key_sign": key_sign_fpath()}
-
-        fpath = filepaths.get(upload_type)
-        if fpath.exists():
-            fpath.unlink()
-
-        f = request.files["file"]
-        f.save(str(fpath))
-        return redirect("/keys/keys-form", code=302)
-
-    @app.route("/keys/delete-file", methods=["GET"])
-    def delete_key_file():
-
-        upload_type = request.args.get("upload_type")
-        filepaths = {"enc_keys": enc_keys_fpath(), "key_sign": key_sign_fpath()}
-        fpath = filepaths.get(upload_type)
-        fpath.unlink()
-        return redirect("/keys/keys-form", code=302)
-
     @app.route("/not-implemented")
     def not_implemented():
         return render_template(
