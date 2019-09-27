@@ -324,7 +324,7 @@ msgid "Simulation will run in"
 msgstr ""
 
 #: co2wui/templates/simulation_form.html:147
-msgid "Scientific mode"
+msgid "Engineering mode"
 msgstr ""
 
 #: co2wui/templates/simulation_header.html:6

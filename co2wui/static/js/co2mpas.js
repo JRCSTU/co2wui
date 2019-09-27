@@ -67,14 +67,14 @@ $('#file_path_key_sign').click(function(){
 	$('#file_browser_key_sign').click();
 });
 
-/* Change between type approval mode and scientific mode */
+/* Change between type approval mode and engineering mode */
 $(function() {
 	$('#tamode').change(function() {
 		if ($(this).prop('checked')) {
 			$('#simulation-mode').text('Type approval mode');
 			$('#ta-label').show();
 		} else {
-			$('#simulation-mode').text('Scientific mode');
+			$('#simulation-mode').text('Engineering mode');
 			$('#ta-label').hide();
 		}
 	})
