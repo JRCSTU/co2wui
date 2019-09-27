@@ -1182,7 +1182,7 @@ def create_app(configfile=None):
             "layout.html",
             action="configuration_form",
             data={
-                "breadcrumb": ["Co2mpas", _("Configuration file")],
+                "breadcrumb": ["Co2mpas", _("Physical model configuration file")],
                 "props": {
                     "active": {
                         "run": "",
@@ -1192,7 +1192,7 @@ def create_app(configfile=None):
                     }
                 },
                 "timestamp": time.time(),
-                "title": "Configuration form",
+                "title": "Physical model configuration file",
                 "inputs": files,
                 "texts": co2wui_texts,
                 "globals": co2wui_globals,

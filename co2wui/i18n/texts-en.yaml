@@ -25,8 +25,18 @@ sync:
 keys:
     load keys: "<b>For TA and TS use only</b>: upload the provided key files to encrypt the output of the Co<sub>2</sub>mpas simulation and send it to the DICE3 server, as EU regulations 1152 and 1153/2017."
 conf:
-    description: A precompiled file to overwrite the input variables of the physical model can be generated and downloaded.
-    usage: You can use the configuration file only in engineering mode. Choose and upload a new configuration file for the Run Co2mpas procedure.
+    description: The configuration file (.yaml) is used to overwrite the default variables of the physical model.
+    usage: 'You can use the configuration file only in <b>engineering mode</b>. Choose and upload a new configuration file for the Run Co<sub>2</sub>mpas procedure.
+        <p>How to use it:</p>
+
+        <ul>
+        <li>download the template (click <a id="template-link" href="/conf/template">here</a>). This step is necessary only if you do not already have a valid configuration file</li>
+        <li>modify it according to your parameters.</li>
+        <li>upload it by pressing choose a configuration file. NB your file will be rewritten every time you upload a new one, and it will always be named conf.yaml</li>
+        <li>flag the checkbox <b>use custom configuration file</b> under Advanced options in Run simulation. Please note that the checkbox is only available if the configuration file has been successfully uploaded.</li>
+
+        <br/>
+        <p><strong>N.B.</strong> conf.yaml works ONLY in <b>engineering mode</b>.</p>'
 contact:
     intro: "To report a problem, contact us:"
 demo:

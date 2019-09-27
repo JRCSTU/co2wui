@@ -182,7 +182,7 @@ class TestLiveServer:
         driver.get(url_for("conf/configuration-form"))
 
         elem = driver.find_element_by_tag_name("h1")
-        assert elem.text == "Configuration file"
+        assert elem.text == "Physical model configuration file"
 
         elem = driver.find_element_by_id("file")
         elem.send_keys(os.path.join(os.getcwd(), "test", "sample.conf.yaml"))
