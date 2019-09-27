@@ -11,10 +11,11 @@ from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import Select, WebDriverWait
 
-
-# from https://pytest-flask.readthedocs.io/en/latest/features.html#start-live-server-start-live-server-automatically-default
 @pytest.mark.usefixtures("app")
 class TestLiveServer:
+    def test_000_dummy(self):
+        pass
+
     def test_100_datasync_form(self, driver, live_server, url_for):
 
         print("Starting datasync download template UI test")
@@ -39,31 +40,63 @@ class TestLiveServer:
         elem = driver.find_element_by_id("gearbox")
         assert elem.text == "Automatic\nManual"
 
-    def test_120_datasync(self, driver, live_server, url_for):
+    def test_110_datasync(self, driver, live_server, url_for):
 
-        print("Starting datasync UI test")
+       print("Starting datasync UI test")
+       driver.get(url_for("sync/synchronisation-form"))
+
+       elem = driver.find_element_by_id("file")
+       elem.send_keys(os.path.join(os.getcwd(), "test", "datasync.xlsx"))
+
+       elem = driver.find_element_by_id("add-sync-file-form").submit()
+
+       wait = WebDriverWait(driver, 20)
+       cond = wait.until(EC.visibility_of_element_located((By.ID, "delete-button")))
+
+       elem = driver.find_element_by_id("synchronise-button")
+       assert elem.text == "Synchronise data"
+
+       elem.click()
+       WebDriverWait(driver, 20).until(
+           EC.text_to_be_present_in_element(
+               (By.ID, "sync-feedback"), "1 file has been processed"
+           )
+       )
+
+    def test_120_delete_file(self, driver, live_server, url_for):
+
+        print("Starting datasync delete file UI test")
         driver.get(url_for("sync/synchronisation-form"))
 
-        elem = driver.find_element_by_id("synchronise-button")
-        assert elem.text == "Synchronise data"
+        src = driver.page_source
+        text_found = re.search(r"datasync.xlsx", src)
+        assert text_found is not None
 
+        elem = driver.find_element_by_id("delete-button")
         elem.click()
-        WebDriverWait(driver, 5).until(
-            EC.text_to_be_present_in_element(
-                (By.ID, "sync-feedback"), "1 file has been processed"
-            )
-        )
+
+        src = driver.page_source
+        text_found = re.search(r"datasync.xlsx", src)
+        assert text_found is None
 
     def test_130_new_sync(self, driver, live_server, url_for):
 
         print("Starting new synchronisation UI test")
         driver.get(url_for("sync/synchronisation-form"))
 
+        elem = driver.find_element_by_id("file")
+        elem.send_keys(os.path.join(os.getcwd(), "test", "datasync.xlsx"))
+
+        elem = driver.find_element_by_id("add-sync-file-form").submit()
+
+        wait = WebDriverWait(driver, 20)
+        cond = wait.until(EC.visibility_of_element_located((By.ID, "delete-button")))
+
         elem = driver.find_element_by_id("synchronise-button")
         assert elem.text == "Synchronise data"
 
         elem.click()
-        WebDriverWait(driver, 5).until(
+        WebDriverWait(driver, 20).until(
             EC.text_to_be_present_in_element(
                 (By.ID, "sync-feedback"), "1 file has been processed"
             )
@@ -78,15 +111,8 @@ class TestLiveServer:
         elem = driver.find_element_by_id("synchronise-button")
         assert elem.is_displayed() is True
 
-    def test_140_delete_file_and_upload(self, driver, live_server, url_for):
-
-        print("Starting datasync delete file UI test")
+        # Delete file
         driver.get(url_for("sync/synchronisation-form"))
-
-        src = driver.page_source
-        text_found = re.search(r"datasync.xlsx", src)
-        assert text_found is None
-
         elem = driver.find_element_by_id("delete-button")
         elem.click()
 
@@ -94,25 +120,7 @@ class TestLiveServer:
         text_found = re.search(r"datasync.xlsx", src)
         assert text_found is None
 
-        elem = driver.find_element_by_id("file")
-        elem.send_keys(os.path.join(os.getcwd(), "test", "datasync.xlsx"))
-
-        elem = driver.find_element_by_id("add-sync-file-form").submit()
-
-        wait = WebDriverWait(driver, 10)
-        cond = wait.until(EC.visibility_of_element_located((By.ID, "delete-button")))
-
-        src = driver.page_source
-        text_found = re.search(r"datasync.xlsx", src)
-        assert text_found is None
-
-    def test_150_datasync_file_other_name(self, driver, live_server, url_for):
-
-        print("Starting datasync other name UI test")
-        driver.get(url_for("sync/synchronisation-form"))
-
-        elem = driver.find_element_by_id("delete-button")
-        elem.click()
+    def test_140_datasync_file_other_name(self, driver, live_server, url_for):
 
         elem = driver.find_element_by_id("file")
         elem.send_keys(os.path.join(os.getcwd(), "test", "datasync-other-name.xlsx"))
@@ -124,7 +132,7 @@ class TestLiveServer:
 
         src = driver.page_source
         text_found = re.search(r"datasync-other-name.xlsx", src)
-        assert text_found is None
+        assert text_found is not None
 
         src = driver.page_source
         text_found = re.search(r"datasync.xlsx", src)
@@ -133,28 +141,14 @@ class TestLiveServer:
         elem = driver.find_element_by_id("delete-button")
         elem.click()
 
-        elem = driver.find_element_by_id("file")
-        elem.send_keys(os.path.join(os.getcwd(), "test", "datasync.xlsx"))
-
-        wait = WebDriverWait(driver, 10)
-        cond = wait.until(EC.visibility_of_element_located((By.ID, "delete-button")))
-
         src = driver.page_source
-        text_found = re.search(r"datasync.xlsx", src)
+        text_found = re.search(r"datasync-other-name", src)
         assert text_found is None
 
-    def test_160_datasync_with_empty_file(self, driver, live_server, url_for):
+    def test_150_datasync_with_empty_file(self, driver, live_server, url_for):
 
         print("Starting datasync with empty file UI test")
         driver.get(url_for("sync/synchronisation-form"))
-
-        elem = driver.find_element_by_id("delete-button")
-        elem.click()
-
-        wait = WebDriverWait(driver, 10)
-        cond = wait.until(
-            EC.visibility_of_element_located((By.ID, "add-sync-file-form"))
-        )
 
         elem = driver.find_element_by_id("file")
         elem.send_keys(os.path.join(os.getcwd(), "test", "datasync-empty.xlsx"))
@@ -162,7 +156,7 @@ class TestLiveServer:
         driver.implicitly_wait(2)
         elem = driver.find_element_by_id("add-sync-file-form").submit()
 
-        wait = WebDriverWait(driver, 10)
+        wait = WebDriverWait(driver, 20)
         cond = wait.until(EC.visibility_of_element_located((By.ID, "delete-button")))
 
         elem = driver.find_element_by_id("synchronise-button")
@@ -178,72 +172,17 @@ class TestLiveServer:
         elem = driver.find_element_by_id("delete-button")
         elem.click()
 
-        elem = driver.find_element_by_id("file")
-        elem.send_keys(os.path.join(os.getcwd(), "test", "datasync.xlsx"))
+        src = driver.page_source
+        text_found = re.search(r"datasync-empty", src)
+        assert text_found is None
 
-        elem = driver.find_element_by_id("add-sync-file-form").submit()
+    def test_160_upload_config_file(self, driver, live_server, url_for):
 
-        wait = WebDriverWait(driver, 10)
-        cond = wait.until(EC.visibility_of_element_located((By.ID, "delete-button")))
-
-    def test_200_generate_config_file(self, driver, live_server, url_for):
-
-        print("Starting generate config file test")
+        print("Starting upload config file test")
         driver.get(url_for("conf/configuration-form"))
 
         elem = driver.find_element_by_tag_name("h1")
         assert elem.text == "Configuration file"
-
-        src = driver.page_source
-        text_found = re.search(
-            r"A precompiled file to overwrite the input variables of the physical model can be generated and downloaded.",
-            src,
-        )
-        assert text_found is None
-
-        elem = driver.find_element_by_id("generate-link")
-        elem.click()
-
-        wait = WebDriverWait(driver, 10)
-        cond = wait.until(EC.visibility_of_element_located((By.ID, "conf-table")))
-
-        src = driver.page_source
-        text_found = re.search(
-            r"Do you want to generate a blank configuration file", src
-        )
-        assert text_found is None
-
-        src = driver.page_source
-        text_found = re.search(r"conf.yaml", src)
-        assert text_found is None
-
-        text_found = re.search(r"Download", src)
-        assert text_found is None
-
-        text_found = re.search(r"Delete", src)
-        assert text_found is None
-
-    def test_210_delete_config_file(self, driver, live_server, url_for):
-
-        print("Starting delete config file test")
-        driver.get(url_for("conf/configuration-form"))
-
-        elem = driver.find_element_by_id("delete-button")
-        elem.click()
-
-        wait = WebDriverWait(driver, 10)
-        cond = wait.until(EC.visibility_of_element_located((By.ID, "generate-link")))
-
-        src = driver.page_source
-        text_found = re.search(
-            r"Do you want to generate a blank configuration file", src
-        )
-        assert text_found is None
-
-    def test_220_upload_config_file(self, driver, live_server, url_for):
-
-        print("Starting upload config file test")
-        driver.get(url_for("conf/configuration-form"))
 
         elem = driver.find_element_by_id("file")
         elem.send_keys(os.path.join(os.getcwd(), "test", "sample.conf.yaml"))
@@ -254,61 +193,18 @@ class TestLiveServer:
         cond = wait.until(EC.visibility_of_element_located((By.ID, "conf-table")))
 
         src = driver.page_source
-        text_found = re.search(
-            r"Do you want to generate a blank configuration file", src
-        )
-        assert text_found is None
-
-        src = driver.page_source
         text_found = re.search(r"conf.yaml", src)
-        assert text_found is None
+        assert text_found is not None
 
         text_found = re.search(r"Download", src)
-        assert text_found is None
+        assert text_found is not None
 
         text_found = re.search(r"Delete", src)
-        assert text_found is None
-
-    def test_300_simulation_delete_and_upload(self, driver, live_server, url_for):
-
-        print("Starting delete and upload simulation test")
-        driver.get(url_for("run/simulation-form"))
-
-        src = driver.page_source
-        text_found = re.search(r"co2mpas_demo-0.xlsx", src)
-        assert text_found is None
+        assert text_found is not None
 
         elem = driver.find_element_by_id("delete-button")
         elem.click()
 
         src = driver.page_source
-        text_found = re.search(r"No input files have been uploaded", src)
+        text_found = re.search(r"conf.yaml", src)
         assert text_found is None
-
-        try:
-            elem = driver.find_element_by_id("delete-button")
-            assert False
-        except NoSuchElementException:
-            pass
-
-        elem = driver.find_element_by_id("file")
-        elem.send_keys(os.path.join(os.getcwd(), "test", "co2mpas_demo-0.xlsx"))
-
-        elem = driver.find_element_by_id("add-file-form").submit()
-
-        wait = WebDriverWait(driver, 10)
-        cond = wait.until(EC.visibility_of_element_located((By.ID, "delete-button")))
-
-    def test_310_run_simulation(self, driver, live_server, url_for):
-
-        print("Starting run simulation test")
-        driver.get(url_for("run/simulation-form"))
-
-        elem = driver.find_element_by_id("run-simulation")
-        elem.click()
-
-        WebDriverWait(driver, 100).until(
-            EC.text_to_be_present_in_element(
-                (By.ID, "sim-result"), "Simulation results"
-            )
-        )
