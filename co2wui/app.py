@@ -371,6 +371,7 @@ def run_process(args, sid):
         port=4999,
         cmd_flags=kwargs,
         input_files=[str(f) for f in files],
+        **{sh.START: kwargs},
     )
 
     # Dispatcher
