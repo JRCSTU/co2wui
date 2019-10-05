@@ -565,6 +565,10 @@ def create_app(configfile=None):
     @app.route("/run/simulation")
     def run_simulation():
 
+        # Create session id if it doesn't exist
+        if not "sid" in session.keys():
+          session["sid"] = next(tempfile._get_candidate_names())
+
         process = multiprocessing.Process(target=run_process, args=(request.args,session["sid"],))
         process.start()
         id = process.pid
