@@ -95,7 +95,15 @@
 													<tbody><tr>
 														<th style="width: 10px">#</th>
 														<th>{{ _("Filename") }}</th>														
-														<th style="width: 40px">&nbsp;</th>
+														<th style="width: 40px">
+															{% if data.inputs|length > 1 %}
+																<form action="/run/delete-all" method="get">
+																	<button id="delete-button" class="btn btn-sm btn-warning"><i class="glyphicon glyphicon-trash"></i> {{ _("Delete all") }}</button>
+																</form>
+															{% else %}
+																&nbsp;
+															{% endif %}
+														</th>
 													</tr>
 													{% for file in data.inputs %}
 													<tr>

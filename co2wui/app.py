@@ -743,6 +743,13 @@ def create_app(configfile=None):
         inputs[int(fn) - 1].unlink()
         return redirect("/run/simulation-form", code=302)
 
+    @app.route("/run/delete-all", methods=["GET"])
+    def delete_all():
+        inputs = listdir_inputs("input")
+        for f in inputs:
+          f.unlink()
+        return redirect("/run/simulation-form", code=302)
+
     @app.route("/run/view-results")
     def view_results():
 
