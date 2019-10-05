@@ -984,7 +984,7 @@ def create_app(configfile=None):
     def run_synchronisation():
 
         # Dedicated logging for this run
-        fileh = logging.FileHandler("sync/logfile.txt", "w")
+        fileh = logging.FileHandler(co2wui_fpath("sync", "logfile.txt"), "w")
         logger = logging.getLogger()
         logger.setLevel(logging.INFO)
         frmt = "%(asctime)-15s:%(levelname)5.5s:%(name)s:%(message)s"
