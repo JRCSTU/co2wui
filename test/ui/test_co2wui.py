@@ -204,7 +204,3 @@ class TestLiveServer:
 
         elem = driver.find_element_by_id("delete-button")
         elem.click()
-
-        src = driver.page_source
-        text_found = re.search(r"conf.yaml", src)
-        assert text_found is None
