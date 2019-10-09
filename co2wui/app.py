@@ -640,7 +640,7 @@ def create_app(configfile=None):
 
         # Get the summary of the execution (if ready)
         summary = get_summary(run_id)
-        result = "KO" if (summary is None or len(summary[0].keys()) <= 2) else "OK"
+        result = "KO" if (summary is None or not summary or len(summary[0].keys()) <= 2) else "OK"
 
         # Result is KO if not started and counter > 1
         if not started and counter > 1:
@@ -689,7 +689,7 @@ def create_app(configfile=None):
 
         # Collect result files
         results = []
-        if not (summary is None or len(summary[0].keys()) <= 2):
+        if not (summary is None or not summary or len(summary[0].keys()) <= 2):
             output_files = [f.name for f in listdir_outputs("output", run_id)]
             results.append({"name": run_id, "files": output_files})
 
@@ -716,7 +716,7 @@ def create_app(configfile=None):
                 )
                 if (len(phases)) > 0
                 else 0,
-                "summary": summary[0] if summary is not None else None,
+                "summary": summary[0] if summary else None,
                 "results": results if results is not None else None,
                 "header": header,
             },
@@ -774,7 +774,7 @@ def create_app(configfile=None):
             dirname = osp.basename(path)
             output_files = [f.name for f in listdir_outputs("output", dirname)]
             summary = get_summary(dirname)
-            outcome = "KO" if (summary is None or len(summary[0].keys()) <= 2) else "OK"
+            outcome = "KO" if (summary is None or not summary or len(summary[0].keys()) <= 2) else "OK"
             results.append(
                 {
                     "datetime": time.ctime(cdate),
