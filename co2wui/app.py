@@ -329,6 +329,13 @@ def run_process(args, sid):
 
     # File list
     files = listdir_inputs("input")
+
+    # Remove excluded files
+    excluded = list(map(int, args.get("exclude_list").split("|")))
+    for f in reversed(sorted(excluded)):
+      del files[int(f) - 1]
+
+    # Dump to file
     with open(
         co2wui_fpath("output", run_id, "files.dat"), "wb"
     ) as files_list:

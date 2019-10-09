@@ -228,3 +228,25 @@ function check_boxes() {
 }
 
 $('.sidebar-menu').tree({accordion: false});
+
+function exclude_files(num, checked) {
+
+	files = [];
+	excluded = $('#exclude_list').val();
+	if (excluded != '') {
+		files = excluded.split("|");
+	}
+
+	var index = files.indexOf(num.toString());
+	if (index > -1) {
+		files.splice(index, 1);
+	}
+
+	if (checked) {
+		if (num) {
+			files.push(num);
+		}
+	}
+	$('#exclude_list').val(files.join("|"))
+
+}

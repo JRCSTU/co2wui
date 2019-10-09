@@ -94,6 +94,7 @@
 												<table class="table table-bordered">
 													<tbody><tr>
 														<th style="width: 10px">#</th>
+														<th style="width: 10px">{{ _('Exclude') }}</th>
 														<th>{{ _("Filename") }}</th>														
 														<th style="width: 40px">
 															{% if data.inputs|length > 1 %}
@@ -108,6 +109,7 @@
 													{% for file in data.inputs %}
 													<tr>
 														<td>{{loop.index}}.</td>
+														<td><input type="checkbox" id="exclude_file_{{loop.index}}" onclick="exclude_files({{loop.index}}, $('#exclude_file_{{loop.index}}').is(':checked'));"></td>
 														<td title="{{file}}">{{(file[:75] + '...') if file|length > 75 else file}}</td>
 														<td>
 															<form action="/run/delete-file" method="get">
@@ -173,6 +175,7 @@ $(function () {
 										<input type="hidden" name="enable_selector" id="enable_selector" value="">
 										<input type="hidden" name="only_summary" id="only_summary" value="">
 										<input type="hidden" name="custom_conf" id="custom_conf" value="">
+										<input type="hidden" name="exclude_list" id="exclude_list" value="">
 										<div class="row">										
 											<div class="col-xs-12 col-md-6">
 												<label class="pull-right">
