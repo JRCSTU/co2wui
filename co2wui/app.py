@@ -1058,7 +1058,7 @@ def create_app(configfile=None):
 
     @app.route("/sync/load-log", methods=["GET"])
     def load_sync_log():
-        fpath = Path.cwd() / "sync" / "logfile.txt"
+        fpath = co2wui_fpath("sync", "logfile.txt")
         with open(fpath) as f:
             loglines = f.readlines()
 
