@@ -351,7 +351,7 @@ def run_process(args, sid):
         "hard_validation": bool(args.get("hard_validation")),
         "declaration_mode": bool(args.get("declaration_mode")),
         "encryption_keys": str(enc_keys_fpath()) if enc_keys_fpath().exists() else "",
-        "sign_key": str(key_sign_fpath()) if key_sign_fpath().exists() else "",
+        "sign_key": str(key_sign_fpath()) if bool(args.get("tamode")) else "",
         "enable_selector": False,
         "type_approval_mode": bool(args.get("tamode")),
     }
