@@ -28,7 +28,7 @@
 													{% for file in data.inputs %}
 													<tr>
 														<td>{{loop.index}}.</td>
-														<td>{{file}}</td>														
+														<td title="{{file}}">{{(file[:75] + '...') if file|length > 75 else file}}</td>
 														<td>
 															<form action="/run/delete-file" method="get">
 																<input type="hidden" name="fn" value="{{loop.index}}">
