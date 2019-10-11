@@ -331,9 +331,11 @@ def run_process(args, sid):
     files = listdir_inputs("input")
 
     # Remove excluded files
-    excluded = list(map(int, args.get("exclude_list").split("|")))
-    for f in reversed(sorted(excluded)):
-      del files[int(f) - 1]
+    exclude_list = args.get("exclude_list").split("|")
+    if exclude_list != ['']:
+      excluded = list(map(int, exclude_list))
+      for f in reversed(sorted(excluded)):
+        del files[int(f) - 1]
 
     # Dump to file
     with open(
