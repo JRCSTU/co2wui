@@ -33,7 +33,7 @@
 															</tr>		
 															<tr>
 																{% for cycle in ('High', 'Low') %}																
-																<th colspan="6">{{cycle}}</th>																
+																<th colspan="4">{{cycle}}</th>
 																{% endfor %}	
 															</tr>
 															<tr>
@@ -54,17 +54,19 @@
 															</tr>
 															
 															{% set readable = humanised(summary) %}
-															{% for key in readable["params"].keys() %}																		
-															<tr>													
+															{% for key in readable["params"].keys() %}
+																{% if key[0:40].replace("_", " ").capitalize() in data.keep[method] %}
+															<tr>
 																<td>{{key[0:40].replace("_", " ").capitalize()}}</td>
-																{% for cycle in (method + '_h', method + '_l') %}
-																	{% for phase in ('prediction', 'calibration') %}
-																		{% for outcome in ('output', 'target') %}
+																	{% for cycle in (method + '_h', method + '_l') %}
+																		{% for phase in ('prediction', 'calibration') %}
+																			{% for outcome in ('output', 'target') %}
 																<th>{{readable["params"][key][cycle + "." + phase + "." + outcome + "." + key]}}</th>																
+																			{% endfor %}
 																		{% endfor %}	
-																	{% endfor %}	
-																{% endfor %}																
+																	{% endfor %}
 															</tr>
+																{% endif %}
 															{% endfor %}
 														</tbody></table>
 													</div>

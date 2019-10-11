@@ -225,17 +225,17 @@ def remove_port_file():
 def humanised(summary):
     """Return a more readable format of the summary data structure"""
 
+    # Ugly but easier to read
+    # 1st time init dict
     formatted = {"params": {}}
     for k in summary.keys():
         if k not in ("base", "id"):
-            try:
-                formatted["params"][k[3]][".".join(k)] = (
-                    round(summary[k], 3)
-                    if isinstance(summary[k], float)
-                    else summary[k]
-                )
-            except:
-                formatted["params"][k[3]] = {}
+            formatted["params"][k[3]] = {}
+
+    # 2nd time fill it
+    for k in summary.keys():
+        if k not in ("base", "id"):
+            formatted["params"][k[3]][".".join(k)] = str(round(summary[k], 3) if isinstance(summary[k], float) else summary[k])
 
     return formatted
 
@@ -550,6 +550,33 @@ def create_app(configfile=None):
         """Show a modal dialog with a execution's summary formatted in a table
         """
 
+        # We will only include the following
+        # values in the summary
+        keep = {
+          'nedc': [
+            'Declared co2 emission value',
+            'Co2 emission value',
+            'Co2 emission udc',
+            'Co2 emission eudc',
+            'Fuel consumption value',
+            'Fuel consumption udc',
+            'Fuel consumption eudc',
+          ],
+          'wltp': [
+            'Declared co2 emission value',
+            'Co2 emission value',
+            'Co2 emission low',
+            'Co2 emission medium',
+            'Co2 emission high',
+            'Co2 emission extra high',
+            'Fuel consumption value',
+            'Fuel consumption low',
+            'Fuel consumption medium',
+            'Fuel consumption high',
+            'Fuel consumption extra high',
+          ],
+        }
+
         # Read the header containing run information
         header = {}
         with open(co2wui_fpath("output", runid, "header.dat"), "rb") as header_file:
@@ -565,7 +592,7 @@ def create_app(configfile=None):
                 "ajax.html",
                 action="summary",
                 title=_("Summary of your Co2mpas execution"),
-                data={"thread_id": runid, "summaries": summaries, "header": header},
+                data={"thread_id": runid, "summaries": summaries, "header": header, "keep": keep},
             )
         else:
             return ""
