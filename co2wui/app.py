@@ -626,6 +626,8 @@ def create_app(configfile=None):
 
         # Process id
         process_id = request.args.get("id")
+        if (process_id is None):
+            return redirect("/run/simulation-form", code=302,)
         run_id = '-'.join([session["sid"], process_id])
 
         # Wait counter... if not started after X then error.
