@@ -111,9 +111,16 @@ $('#chk_only_summary').change(function () {
 $('#chk_declaration_mode').change(function () {					
 	if ($('#chk_declaration_mode').is(':checked')) {
 			$('#declaration_mode').val('true');
+			if ($('#chk_enable_selector').is(':checked')) {
+				alert('"Enable selector" cannot be used when "Declaration mode" is enabled');
+				$('#chk_enable_selector').prop("checked", false);
+				$('#enable_selector').val(null);
+			}
+			$('#chk_enable_selector').prop("disabled", true);
 	}   
 	else {
 			$('#declaration_mode').val(null);
+			$('#chk_enable_selector').prop("disabled", false);
 	}
 });	
 
