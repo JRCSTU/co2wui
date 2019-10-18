@@ -19,8 +19,8 @@ run:
         only summary: By selecting this option, Co2mpas provides as output only the summary file (i.e. an excel containing only one row per vehicle simulated).
         custom conf file: Use a custom configuration file previously uploaded
 sync:
-    synchronise data: Synchronization should be performed if time-series signals are time-shifted and/or recorded with different sampling rates. To synchronize and re-sample time series, library syncing is used.
-    description: Synchronization should be performed if time-series signals are time-shifted and/or recorded with different sampling rates. To synchronize and re-sample time series, library syncing is used. 
+    synchronise data: Synchronisation should be performed if time-series signals are time-shifted and/or recorded with different sampling rates. To synchronise and re-sample time series, library syncing is used.
+    description: Synchronisation should be performed if time-series signals are time-shifted and/or recorded with different sampling rates. To synchronise and re-sample time series, library syncing is used. 
     prompt: Load your synchronisation input file. Then click <b>Synchronise data</b>.
 keys:
     load keys: "<b>For TA and TS use only</b>: upload the provided key files to encrypt the output of the Co<sub>2</sub>mpas simulation and send it to the DICE3 server, as EU regulations 1152 and 1153/2017."
