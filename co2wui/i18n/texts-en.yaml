@@ -1,5 +1,5 @@
 home:
-    welcome: Co<sub>2</sub>mpas is backward-looking longitudinal-dynamics CO2 and fuel-consumption simulator for light-duty M1 & N1 vehicles (cars and vans), specially crafted to estimate and type-approve CO2 emissions of vehicles undergoing NEDC testing based on the emissions measured during WLTP tests, according to the EU legislations 1152/EUR/2017 and 1153/EUR/2017.
+    welcome: Co<sub>2</sub>mpas is backward-looking longitudinal-dynamics CO2 and fuel-consumption simulator for light-duty M1 & N1 vehicles (cars and vans), specially crafted to estimate and type-approve CO2 emissions of vehicles undergoing NEDC testing based on the emissions measured during WLTP tests.
     hints: 
         run co2mpas: In this section, Co<sub>2</sub>mpas is executed. 
                 Begin to choose one or more files to use as input for your Co<sub>2</sub>mpas simulation. 
