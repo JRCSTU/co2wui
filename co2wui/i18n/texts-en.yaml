@@ -1,6 +1,5 @@
 home:
-    welcome: Co<sub>2</sub>mpas is a simulation tool, developed  by the European Commission's Joint Research Centre for supporting EU Regulations 1152 and 1153/2017 introduced by Directorate General for Climate Action (DG CLIMA). 
-             It is a backward-looking longitudinal-dynamics CO2 and fuel-consumption simulator for light-duty M1 & N1 vehicles (cars and vans), specially crafted to estimate the CO2 emissions of vehicles over the NEDC testing procedure based on the emissions and vehicle operation data measured over the WLTP test procedure during vehicle type-approval. Co<sub>2</sub>mpas is open source and licensed under the European Union Public Licence.
+    welcome: Co<sub>2</sub>mpas is backward-looking longitudinal-dynamics CO2 and fuel-consumption simulator for light-duty M1 & N1 vehicles (cars and vans), specially crafted to estimate and type-approve CO2 emissions of vehicles undergoing NEDC testing based on the emissions measured during WLTP tests, according to the EU legislations 1152/EUR/2017 and 1153/EUR/2017.
     hints: 
         run co2mpas: In this section, Co<sub>2</sub>mpas is executed. 
                 Begin to choose one or more files to use as input for your Co<sub>2</sub>mpas simulation. 
