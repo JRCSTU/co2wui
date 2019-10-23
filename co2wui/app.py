@@ -815,6 +815,10 @@ def create_app(configfile=None):
                 }
             )
 
+        running = False
+        if ("active_pid" in session) and (session["active_pid"] is not None):
+            running = True
+
         return render_template(
             "layout.html",
             action="view_results",
@@ -824,6 +828,7 @@ def create_app(configfile=None):
                     "active": {"run": "active", "sync": "", "doc": "", "expert": ""}
                 },
                 "results": reversed(results),
+                "running": running,
                 "texts": co2wui_texts,
                 "globals": co2wui_globals,
             },
