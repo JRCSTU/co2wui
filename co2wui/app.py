@@ -435,6 +435,14 @@ def create_app(configfile=None):
     @app.route("/")
     def index():
 
+        news_text = co2wui_texts["home"]["news"]
+        try:
+            response = requests.get("https://dice.jrc.ec.europa.eu/sites/default/files/news/news.html")
+            if response:
+              news_text = response.text
+        except Exception as ex:
+            log.debug("Could not get news_text due to: %s", ex)
+
         nohints = False
         if "nohints" in request.cookies:
             nohints = True
@@ -447,6 +455,7 @@ def create_app(configfile=None):
                 "nohints": nohints,
                 "texts": co2wui_texts,
                 "globals": co2wui_globals,
+                "news_text": news_text
             },
         )
 
