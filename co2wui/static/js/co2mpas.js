@@ -160,8 +160,8 @@ $('#chk_custom_conf').change(function () {
 });
 
 /* Synchronisation form advanced options */
-$('#option_reference_data_set').change(function () {					
-	$('#reference_data_set').val($('#option_reference_data_set').val());
+$('#option_reference_name').change(function () {
+	$('#reference_name').val($('#option_reference_name').val());
 })
 
 $('#option_x_label').change(function () {					
