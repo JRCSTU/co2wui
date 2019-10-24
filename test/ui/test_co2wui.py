@@ -122,6 +122,9 @@ class TestLiveServer:
 
     def test_140_datasync_file_other_name(self, driver, live_server, url_for):
 
+        print("Starting sync file with other name UI test")
+        driver.get(url_for("sync/synchronisation-form"))
+
         elem = driver.find_element_by_id("file")
         elem.send_keys(os.path.join(os.getcwd(), "test", "datasync-other-name.xlsx"))
 
