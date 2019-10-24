@@ -205,6 +205,8 @@ function run_synchronisation() {
 			$('#result-toolbar').show();
 			$('#sync-result').show();
 		} else {
+			$('#options-link').hide();
+			$('#advanced_options').hide();
 			$('#result-toolbar').show();
 			$('#logarea').load('/sync/load-log', function() {
 				if ($('#logarea').val() == '') {
