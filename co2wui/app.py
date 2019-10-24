@@ -7,7 +7,7 @@ import logging
 import logging.config
 import multiprocessing
 import os
-import pickle
+import dill
 import random
 import re
 import shutil
@@ -210,7 +210,7 @@ def get_summary(runid):
 
         with open(co2wui_fpath("output", runid, "result.dat"), "rb") as summary_file:
             try:
-                summary = pickle.load(summary_file)
+                summary = dill.load(summary_file)
             except:
                 return None
 
@@ -341,7 +341,7 @@ def run_process(args, sid):
     with open(
         co2wui_fpath("output", run_id, "files.dat"), "wb"
     ) as files_list:
-        pickle.dump(files, files_list)
+        dill.dump(files, files_list)
 
     # Dedicated logging for this run
     fileh = logging.FileHandler(
@@ -371,7 +371,7 @@ def run_process(args, sid):
     with open(
         co2wui_fpath("output", run_id, "header.dat"), "wb"
     ) as header_file:
-        pickle.dump(kwargs, header_file)
+        dill.dump(kwargs, header_file)
 
     inputs = dict(
         logger=logger,
@@ -397,7 +397,7 @@ def run_process(args, sid):
     with open(
         co2wui_fpath("output", run_id, "result.dat"), "wb"
     ) as summary_file:
-        pickle.dump(ret["summary"], summary_file)
+        dill.dump(ret["summary"], summary_file)
     return ""
 
 
@@ -590,7 +590,7 @@ def create_app(configfile=None):
         header = {}
         with open(co2wui_fpath("output", runid, "header.dat"), "rb") as header_file:
             try:
-                header = pickle.load(header_file)
+                header = dill.load(header_file)
             except:
                 return None
 
@@ -654,7 +654,7 @@ def create_app(configfile=None):
                 co2wui_fpath("output", run_id, "files.dat"), "rb"
             ) as files_list:
                 try:
-                    files = pickle.load(files_list)
+                    files = dill.load(files_list)
                 except:
                     return None
 
@@ -665,7 +665,7 @@ def create_app(configfile=None):
                 co2wui_fpath("output", run_id, "header.dat"), "rb"
             ) as header_file:
                 try:
-                    header = pickle.load(header_file)
+                    header = dill.load(header_file)
                 except:
                     return None
 
