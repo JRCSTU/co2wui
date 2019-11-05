@@ -923,13 +923,13 @@ def create_app(configfile=None):
             "layout.html",
             action="synchronisation_template_form",
             data={
-                "breadcrumb": ["Co2mpas", _("Data synchronisation")],
+                "breadcrumb": ["Co2mpas", _("Synchronization template")],
                 "props": {
                     "active": {"run": "", "sync": "active", "doc": "", "expert": ""}
                 },
                 "texts": co2wui_texts,
                 "globals": co2wui_globals,
-                "title": "Data synchronisation",
+                "title": "Synchronization template",
             },
         )
 
