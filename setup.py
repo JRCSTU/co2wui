@@ -18,6 +18,7 @@ setup(
     license="European Union Public Licence 1.1 or later (EUPL 1.1+)",
     description="WebUI for co2mpas",
     long_description=read("README.md"),
+    long_description_content_type="text/markdown; charset=UTF-8",
     keywords=["automotive", "vehicles", "simulator", "WLTP", "web-app"],
     url="https://github.com/JRCSTU/co2wui",
     project_urls={
