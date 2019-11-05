@@ -1,17 +1,17 @@
 home:
-    welcome: Co<sub>2</sub>mpas is backward-looking longitudinal-dynamics CO2 and fuel-consumption simulator for light-duty M1 & N1 vehicles (cars and vans), specially crafted to estimate and type-approve CO2 emissions of vehicles undergoing NEDC testing based on the emissions measured during WLTP tests.
-    news: <p>The use of Co<sub>2</sub>mpas/DICE is foreseen by EU legislations 1152/EUR/2017 and 1153/EUR/2017 as an integral part of the Commission’s policy for the introduction of WLTP in the EU vehicle certification system.</p>
-          <p>JRC has committed the development, update and support of Co<sub>2</sub>mpas/DICE under an administrative arrangement signed with DG Clima.</p>
+    welcome: CO<sub>2</sub>MPAS is backward-looking longitudinal-dynamics CO2 and fuel-consumption simulator for light-duty M1 & N1 vehicles (cars and vans), specially crafted to estimate and type-approve CO2 emissions of vehicles undergoing NEDC testing based on the emissions measured during WLTP tests.
+    news: <p>The use of CO<sub>2</sub>MPAS/DICE is foreseen by EU legislations 1152/EUR/2017 and 1153/EUR/2017 as an integral part of the Commission’s policy for the introduction of WLTP in the EU vehicle certification system.</p>
+          <p>JRC has committed the development, update and support of CO<sub>2</sub>MPAS/DICE under an administrative arrangement signed with DG Clima.</p>
     hints: 
-        run co2mpas: In this section, Co<sub>2</sub>mpas is executed. 
-                Begin to choose one or more files to use as input for your Co<sub>2</sub>mpas simulation. 
+        run co2mpas: In this section, CO<sub>2</sub>MPAS is executed.
+                Begin to choose one or more files to use as input for your CO<sub>2</sub>MPAS simulation.
                 Press Confirm to proceed.
 run:
-    download template: Press <b>download</b> to retrieve the latest Co<sub>2</sub>mpas input template.
-    run co2mpas: To execute Co<sub>2</sub>mpas press the button <b>Run simulation</b>.
+    download template: Press <b>download</b> to retrieve the latest CO<sub>2</sub>MPAS input template.
+    run co2mpas: To execute CO<sub>2</sub>MPAS press the button <b>Run simulation</b>.
     hints:
         why ta disabled: "TA mode could be disabled for various reasons: check that the encryption and signature keys are uploaded and that there are no advanced options selected that are in contrast with TA mode."
-    intro: In this section, Co<sub>2</sub>mpas is executed. Choose one or more input file(s). Press <b>Run simulation</b> to proceed. 
+    intro: In this section, CO<sub>2</sub>MPAS is executed. Choose one or more input file(s). Press <b>Run simulation</b> to proceed.
     view results: The log of your past simulations is shown here below. You can retrieve your previous simulation results by clicking the <b>links</b> in the table.
     options:
         only declaration mode: Use only the declaration data.
@@ -24,10 +24,10 @@ sync:
     description: Synchronisation should be performed if time-series signals are time-shifted and/or recorded with different sampling rates. To synchronise and re-sample time series, library syncing is used. 
     prompt: Load your synchronisation input file. Then click <b>Synchronise data</b>.
 keys:
-    load keys: "<b>For TA and TS use only</b>: upload the provided key files to encrypt the output of the Co<sub>2</sub>mpas simulation and send it to the DICE3 server, as EU regulations 1152 and 1153/2017."
+    load keys: "<b>For TA and TS use only</b>: upload the provided key files to encrypt the output of the CO<sub>2</sub>MPAS simulation and send it to the DICE3 server, as EU regulations 1152 and 1153/2017."
 conf:
     description: The configuration file (.yaml) is used to overwrite the default variables of the physical model.
-    usage: 'You can use the configuration file only in <b>engineering mode</b>. Choose and upload a new configuration file for the Run Co<sub>2</sub>mpas procedure.
+    usage: 'You can use the configuration file only in <b>engineering mode</b>. Choose and upload a new configuration file for the Run CO<sub>2</sub>MPAS procedure.
         <p>How to use it:</p>
 
         <ul>
@@ -41,4 +41,4 @@ conf:
 contact:
     intro: "To report a problem, contact us:"
 demo:
-    download demo: Press <b>download</b> to download a full Co<sub>2</sub>mpas input file pre-filled with demo data.
+    download demo: Press <b>download</b> to download a full CO<sub>2</sub>MPAS input file pre-filled with demo data.

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2019-10-18 09:10+0200\n"
+"POT-Creation-Date: 2019-11-05 10:38+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,44 +17,44 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.7.0\n"
 
-#: co2wui/app.py:463
+#: co2wui/app.py:472
 msgid "Download template"
 msgstr ""
 
-#: co2wui/app.py:524 co2wui/app.py:732 co2wui/templates/sidebar.html:17
+#: co2wui/app.py:533 co2wui/app.py:741 co2wui/templates/sidebar.html:17
 #: co2wui/templates/simulation_form.html:191
 msgid "Run simulation"
 msgstr ""
 
-#: co2wui/app.py:594
+#: co2wui/app.py:603
 msgid "Summary of your Co2mpas execution"
 msgstr ""
 
-#: co2wui/app.py:822 co2wui/templates/sidebar.html:18
+#: co2wui/app.py:835 co2wui/templates/sidebar.html:18
 msgid "View results"
 msgstr ""
 
-#: co2wui/app.py:912
+#: co2wui/app.py:926
 msgid "Data synchronisation"
 msgstr ""
 
-#: co2wui/app.py:994
+#: co2wui/app.py:1008
 msgid "Run synchronisation"
 msgstr ""
 
-#: co2wui/app.py:1085
+#: co2wui/app.py:1099
 msgid "Synchronisation failed: "
 msgstr ""
 
-#: co2wui/app.py:1121
+#: co2wui/app.py:1135
 msgid "Download demo"
 msgstr ""
 
-#: co2wui/app.py:1235
+#: co2wui/app.py:1249
 msgid "Physical model configuration file"
 msgstr ""
 
-#: co2wui/app.py:1274
+#: co2wui/app.py:1288
 msgid "Feature not implemented"
 msgstr ""
 
@@ -95,18 +95,14 @@ msgid "Contact us"
 msgstr ""
 
 #: co2wui/templates/dashboard.html:5
-msgid "Welcome to Co<sub>2</sub>mpas"
+msgid "Welcome to CO<sub>2</sub>MPAS"
 msgstr ""
 
-#: co2wui/templates/dashboard.html:12
-msgid "News & updates"
+#: co2wui/templates/dashboard.html:22 co2wui/templates/sidebar.html:10
+msgid "Run CO<sub>2</sub>MPAS"
 msgstr ""
 
-#: co2wui/templates/dashboard.html:30 co2wui/templates/sidebar.html:10
-msgid "Run Co<sub>2</sub>mpas"
-msgstr ""
-
-#: co2wui/templates/dashboard.html:45 co2wui/templates/sidebar.html:31
+#: co2wui/templates/dashboard.html:37 co2wui/templates/sidebar.html:31
 msgid "Synchronise data"
 msgstr ""
 
@@ -246,7 +242,7 @@ msgid "Haven't done it yet?"
 msgstr ""
 
 #: co2wui/templates/simulation_form.html:21
-msgid "Download Co<sub>2</sub>mpas input template!"
+msgid "Download CO<sub>2</sub>MPAS input template!"
 msgstr ""
 
 #: co2wui/templates/simulation_form.html:26
