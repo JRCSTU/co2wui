@@ -17,7 +17,7 @@ run:
         only declaration mode: Use only the declaration data.
         hard validation: It is an extra validation of the inserted input data. If the data do not seem legit, the software will stop the simulation and provide an error message.
         enable selector: The default model selection criteria are to use the calibrated models from WLTP-H data to predict WLTP-H and NEDC-H and from WLTP_L data to predict WLTP-L and NEDC-L. On the contrary, if the selector is enabled, the function extract_calibrated_model detects the best macro-model for prediction (from WLTP-H/L). The selection is performed according to the model’s score, which is the model capability to reproduce the input data.
-        only summary: By selecting this option, Co2mpas provides as output only the summary file (i.e. an excel containing only one row per vehicle simulated).
+        only summary: By selecting this option, CO<sub>2</sub>MPAS provides as output only the summary file (i.e. an excel containing only one row per vehicle simulated).
         custom conf file: Use a custom configuration file previously uploaded
 sync:
     synchronise data: Synchronisation should be performed if time-series signals are time-shifted and/or recorded with different sampling rates. To synchronise and re-sample time series, library syncing is used.
