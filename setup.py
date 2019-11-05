@@ -46,6 +46,7 @@ setup(
             "black",  # for code-formatting
             "pip",
             "pre-commit",  # for code-formatting
+            "twine",
             "wheel",
         ],
     },
