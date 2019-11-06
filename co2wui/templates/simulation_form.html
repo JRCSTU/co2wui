@@ -162,6 +162,7 @@
 $(function () {
     $('#add-file-form').fileupload({
         dataType: 'json',
+        singleFileUploads: false,
         done: function (e, data) {
 					$('#uploads-list').load('/run/uploads-list');
         }

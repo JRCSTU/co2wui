@@ -774,10 +774,10 @@ def create_app(configfile=None):
 
     @app.route("/run/add-file", methods=["POST"])
     def add_file():
-        f = request.files['files[]']
-        f.save(str(co2wui_fpath("input", secure_filename(f.filename))))
-        files = {"file": f.read()}
-        return json.dumps({"files": {"name": f.filename}})
+        uploaded_files = request.files.getlist('files[]')
+        for f in uploaded_files:
+          f.save(str(co2wui_fpath("input", secure_filename(f.filename))))
+        return json.dumps('OK')
 
     @app.route("/run/delete-file", methods=["GET"])
     def delete_file():
