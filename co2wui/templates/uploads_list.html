@@ -8,13 +8,14 @@
 
 											<div class="box-header with-border">
 												<h3 class="box-title">{{ _("Your files ready to be processed") }}:</h3>
+												<p style="font-size: 11px;"><a href="" onclick="$('.exclude').toggle(); return false;"><i class="fa fa-remove"></i> Click here to exclude some files.</a></p>
 											</div>
 											<!-- /.box-header -->
 											<div class="box-body">
 												<table class="table table-bordered">
 													<tbody><tr>
 														<th style="width: 10px">#</th>
-														<th style="width: 10px">{{ _('Exclude') }}</th>
+														<th class="exclude" style="width: 10px; display: none;">{{ _('Exclude') }}</th>
 														<th>{{ _("Filename") }}</th>														
 														<th style="width: 40px">
 															{% if data.inputs|length > 1 %}
@@ -29,7 +30,7 @@
 													{% for file in data.inputs %}
 													<tr>
 														<td>{{loop.index}}.</td>
-														<td><input type="checkbox" id="exclude_file_{{loop.index}}" onclick="exclude_files({{loop.index}}, $('#exclude_file_{{loop.index}}').is(':checked'));"></td>
+														<td class="exclude" style="display: none;"><input type="checkbox" id="exclude_file_{{loop.index}}" onclick="exclude_files({{loop.index}}, $('#exclude_file_{{loop.index}}').is(':checked'));"></td>
 														<td title="{{file}}">{{(file[:75] + '...') if file|length > 75 else file}}</td>
 														<td>
 															<form action="/run/delete-file" method="get">
