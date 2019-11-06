@@ -114,7 +114,7 @@ $('#chk_declaration_mode').change(function () {
 			$('#declaration_mode').val('true');
 
 			$('#chk_hard_validation').prop("checked", true);
-			$('#chk_hard_validation').prop("disabled", false);
+			$('#chk_hard_validation').prop("disabled", true);
 			$('#hard_validation').val('true');
 
 			if ($('#chk_enable_selector').is(':checked')) {
@@ -123,11 +123,16 @@ $('#chk_declaration_mode').change(function () {
 				$('#enable_selector').val(null);
 			}
 			$('#chk_enable_selector').prop("disabled", true);
+
+			$('#chk_custom_conf').prop("checked", false);
+			$('#chk_custom_conf').prop("disabled", true);
+			$('#custom_conf').val(null);
 	}   
 	else {
 			$('#declaration_mode').val(null);
 			$('#chk_enable_selector').prop("disabled", false);
 			$('#chk_hard_validation').prop("disabled", false);
+			$('#chk_custom_conf').prop("disabled", false);
 	}
 });	
 
