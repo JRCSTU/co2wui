@@ -10,7 +10,7 @@ run:
     download template: Press <b>download</b> to retrieve the latest CO<sub>2</sub>MPAS input template.
     run co2mpas: To execute CO<sub>2</sub>MPAS press the button <b>Run simulation</b>.
     hints:
-        why ta disabled: "TA mode could be disabled for various reasons: check that the encryption and signature keys are uploaded and that there are no advanced options selected that are in contrast with TA mode."
+        why ta disabled: 'To enable the TA mode place the dice.co2mpas.keys in the DICE_KEYS folder. For further information refer to the &quot;Help&quot; of https://dice.jrc.ec.europa.eu/, point 2'
     intro: In this section, CO<sub>2</sub>MPAS is executed. Choose one or more input file(s). Press <b>Run simulation</b> to proceed.
     view results: The log of your past simulations is shown here below. You can retrieve your previous simulation results by clicking the <b>links</b> in the table.
     options:
