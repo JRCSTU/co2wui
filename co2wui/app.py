@@ -45,7 +45,6 @@ from flask import (
 )
 from flask.cli import FlaskGroup
 from flask_babel import Babel
-from flask_session import Session
 from jinja2 import Environment, PackageLoader
 from ruamel import yaml
 from werkzeug.utils import secure_filename
@@ -407,7 +406,6 @@ def create_app(configfile=None):
     from . import i18n
 
     app = Flask(__name__)
-    sess = Session()
 
     babel = Babel(app)
     CO2MPAS_VERSION = __version__
@@ -416,8 +414,6 @@ def create_app(configfile=None):
 
     app.secret_key = "%032x" % hash
     app.config["SESSION_TYPE"] = "filesystem"
-
-    sess.init_app(app)
 
     app.jinja_env.globals.update(humanised=humanised)
 
