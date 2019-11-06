@@ -9,6 +9,9 @@
 					<th>{{ _("Declaration mode") }}</th>
 					<th>{{ _("Enable selector") }}</th>
 					<th>{{ _("Only summary") }}</th>
+					{% if data.header.model_conf %}
+					<th>{{ _("Custom configuration file") }}</th>
+					{% endif %}
 				</tr>
 				<tr>
 					<td>{{ data.process_id }}</td>
@@ -17,6 +20,9 @@
 					<td>{{ data.header.declaration_mode }}</td>
 					<td>{{ data.header.enable_selector }}</td>
 					<td>{{ data.header.only_summary }}</td>
+					{% if data.header.model_conf %}
+					<td>{{ data.header.model_conf }}</td>
+					{% endif %}
 				</tr>
 			</table>
 		</div>
