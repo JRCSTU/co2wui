@@ -11,6 +11,7 @@ from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import Select, WebDriverWait
 
+
 @pytest.mark.usefixtures("app")
 class TestLiveServer:
     def test_000_dummy(self):
@@ -42,26 +43,26 @@ class TestLiveServer:
 
     def test_110_datasync(self, driver, live_server, url_for):
 
-       print("Starting datasync UI test")
-       driver.get(url_for("sync/synchronisation-form"))
+        print("Starting datasync UI test")
+        driver.get(url_for("sync/synchronisation-form"))
 
-       elem = driver.find_element_by_id("file")
-       elem.send_keys(os.path.join(os.getcwd(), "test", "datasync.xlsx"))
+        elem = driver.find_element_by_id("file")
+        elem.send_keys(os.path.join(os.getcwd(), "test", "datasync.xlsx"))
 
-       elem = driver.find_element_by_id("add-sync-file-form").submit()
+        elem = driver.find_element_by_id("add-sync-file-form").submit()
 
-       wait = WebDriverWait(driver, 20)
-       cond = wait.until(EC.visibility_of_element_located((By.ID, "delete-button")))
+        wait = WebDriverWait(driver, 20)
+        cond = wait.until(EC.visibility_of_element_located((By.ID, "delete-button")))
 
-       elem = driver.find_element_by_id("synchronise-button")
-       assert elem.text == "Synchronise data"
+        elem = driver.find_element_by_id("synchronise-button")
+        assert elem.text == "Synchronise data"
 
-       elem.click()
-       WebDriverWait(driver, 20).until(
-           EC.text_to_be_present_in_element(
-               (By.ID, "sync-feedback"), "1 file has been processed"
-           )
-       )
+        elem.click()
+        WebDriverWait(driver, 20).until(
+            EC.text_to_be_present_in_element(
+                (By.ID, "sync-feedback"), "1 file has been processed"
+            )
+        )
 
     def test_120_delete_file(self, driver, live_server, url_for):
 

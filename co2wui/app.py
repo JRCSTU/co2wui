@@ -71,6 +71,7 @@ progress_bar = {
     "write_to_excel": 99,
 }
 
+
 def ensure_working_folders():
     for p in (
         ("DICE_KEYS",),
@@ -234,7 +235,9 @@ def humanised(summary):
     # 2nd time fill it
     for k in summary.keys():
         if k not in ("base", "id"):
-            formatted["params"][k[3]][".".join(k)] = str(round(summary[k], 3) if isinstance(summary[k], float) else summary[k])
+            formatted["params"][k[3]][".".join(k)] = str(
+                round(summary[k], 3) if isinstance(summary[k], float) else summary[k]
+            )
 
     return formatted
 
@@ -320,7 +323,7 @@ def run_process(args, sid):
 
     # Pick current thread
     process = multiprocessing.current_process()
-    run_id = '-'.join([sid, str(process.pid)])
+    run_id = "-".join([sid, str(process.pid)])
 
     # Create output directory for this execution
     output_folder = co2wui_fpath("output", run_id)
@@ -331,21 +334,17 @@ def run_process(args, sid):
 
     # Remove excluded files
     exclude_list = args.get("exclude_list").split("|")
-    if exclude_list != ['']:
-      excluded = list(map(int, exclude_list))
-      for f in reversed(sorted(excluded)):
-        del files[int(f) - 1]
+    if exclude_list != [""]:
+        excluded = list(map(int, exclude_list))
+        for f in reversed(sorted(excluded)):
+            del files[int(f) - 1]
 
     # Dump to file
-    with open(
-        co2wui_fpath("output", run_id, "files.dat"), "wb"
-    ) as files_list:
+    with open(co2wui_fpath("output", run_id, "files.dat"), "wb") as files_list:
         dill.dump(files, files_list)
 
     # Dedicated logging for this run
-    fileh = logging.FileHandler(
-        co2wui_fpath("output", run_id, "logfile.txt"), "a"
-    )
+    fileh = logging.FileHandler(co2wui_fpath("output", run_id, "logfile.txt"), "a")
     logger = logging.getLogger()
     logger.setLevel(logging.INFO)
     frmt = "%(asctime)-15s:%(levelname)5.5s:%(name)s:%(message)s"
@@ -364,12 +363,10 @@ def run_process(args, sid):
         "type_approval_mode": bool(args.get("tamode")),
     }
 
-    if (conf_fpath().exists() and bool(args.get("custom_conf"))):
-      kwargs["model_conf"] = conf_fpath()
+    if conf_fpath().exists() and bool(args.get("custom_conf")):
+        kwargs["model_conf"] = conf_fpath()
 
-    with open(
-        co2wui_fpath("output", run_id, "header.dat"), "wb"
-    ) as header_file:
+    with open(co2wui_fpath("output", run_id, "header.dat"), "wb") as header_file:
         dill.dump(kwargs, header_file)
 
     inputs = dict(
@@ -393,9 +390,7 @@ def run_process(args, sid):
     n["filters"].append(log_phases)
 
     ret = d.dispatch(inputs, ["done", "run", "core_model"])
-    with open(
-        co2wui_fpath("output", run_id, "result.dat"), "wb"
-    ) as summary_file:
+    with open(co2wui_fpath("output", run_id, "result.dat"), "wb") as summary_file:
         dill.dump(ret["summary"], summary_file)
     return ""
 
@@ -426,16 +421,18 @@ def create_app(configfile=None):
         co2wui_texts["co2mpas_version"] = CO2MPAS_VERSION
 
     # Global variable for plot server port
-    co2wui_globals = { "plot_port": None }
+    co2wui_globals = {"plot_port": None}
 
     @app.route("/")
     def index():
 
         news_text = co2wui_texts["home"]["news"]
         try:
-            response = requests.get("https://dice.jrc.ec.europa.eu/sites/default/files/news/news.html")
+            response = requests.get(
+                "https://dice.jrc.ec.europa.eu/sites/default/files/news/news.html"
+            )
             if response:
-              news_text = response.text
+                news_text = response.text
         except Exception as ex:
             log.debug("Could not get news_text due to: %s", ex)
 
@@ -451,7 +448,7 @@ def create_app(configfile=None):
                 "nohints": nohints,
                 "texts": co2wui_texts,
                 "globals": co2wui_globals,
-                "news_text": news_text
+                "news_text": news_text,
             },
         )
 
@@ -509,7 +506,7 @@ def create_app(configfile=None):
 
         # Create session id if it doesn't exist
         if not "sid" in session.keys():
-          session["sid"] = next(tempfile._get_candidate_names())
+            session["sid"] = next(tempfile._get_candidate_names())
 
         if ("active_pid" in session) and (session["active_pid"] is not None):
             return redirect(
@@ -544,10 +541,7 @@ def create_app(configfile=None):
         return render_template(
             "ajax.html",
             action="uploads_list",
-            data={
-                "inputs": inputs,
-                "ta_enabled": ta_enabled(),
-            },
+            data={"inputs": inputs, "ta_enabled": ta_enabled(),},
         )
 
     @app.route("/run/view-summary/<runid>")
@@ -558,28 +552,28 @@ def create_app(configfile=None):
         # We will only include the following
         # values in the summary
         keep = {
-          'nedc': [
-            'Declared co2 emission value',
-            'Co2 emission value',
-            'Co2 emission udc',
-            'Co2 emission eudc',
-            'Fuel consumption value',
-            'Fuel consumption udc',
-            'Fuel consumption eudc',
-          ],
-          'wltp': [
-            'Declared co2 emission value',
-            'Co2 emission value',
-            'Co2 emission low',
-            'Co2 emission medium',
-            'Co2 emission high',
-            'Co2 emission extra high',
-            'Fuel consumption value',
-            'Fuel consumption low',
-            'Fuel consumption medium',
-            'Fuel consumption high',
-            'Fuel consumption extra high',
-          ],
+            "nedc": [
+                "Declared co2 emission value",
+                "Co2 emission value",
+                "Co2 emission udc",
+                "Co2 emission eudc",
+                "Fuel consumption value",
+                "Fuel consumption udc",
+                "Fuel consumption eudc",
+            ],
+            "wltp": [
+                "Declared co2 emission value",
+                "Co2 emission value",
+                "Co2 emission low",
+                "Co2 emission medium",
+                "Co2 emission high",
+                "Co2 emission extra high",
+                "Fuel consumption value",
+                "Fuel consumption low",
+                "Fuel consumption medium",
+                "Fuel consumption high",
+                "Fuel consumption extra high",
+            ],
         }
 
         # Read the header containing run information
@@ -597,7 +591,12 @@ def create_app(configfile=None):
                 "ajax.html",
                 action="summary",
                 title=_("Summary of your Co2mpas execution"),
-                data={"thread_id": runid, "summaries": summaries, "header": header, "keep": keep},
+                data={
+                    "thread_id": runid,
+                    "summaries": summaries,
+                    "header": header,
+                    "keep": keep,
+                },
             )
         else:
             return ""
@@ -608,9 +607,11 @@ def create_app(configfile=None):
 
         # Create session id if it doesn't exist
         if not "sid" in session.keys():
-          session["sid"] = next(tempfile._get_candidate_names())
+            session["sid"] = next(tempfile._get_candidate_names())
 
-        process = multiprocessing.Process(target=run_process, args=(request.args,session["sid"],))
+        process = multiprocessing.Process(
+            target=run_process, args=(request.args, session["sid"],)
+        )
         process.start()
         id = process.pid
         session["active_pid"] = str(id)
@@ -631,9 +632,9 @@ def create_app(configfile=None):
 
         # Process id
         process_id = request.args.get("id")
-        if (process_id is None):
+        if process_id is None:
             return redirect("/run/simulation-form", code=302,)
-        run_id = '-'.join([session["sid"], process_id])
+        run_id = "-".join([session["sid"], process_id])
 
         # Wait counter... if not started after X then error.
         # This is required due to a latency when launching a new
@@ -646,9 +647,7 @@ def create_app(configfile=None):
         files = []
         if osp.exists(co2wui_fpath("output", run_id, "files.dat")):
             started = True
-            with open(
-                co2wui_fpath("output", run_id, "files.dat"), "rb"
-            ) as files_list:
+            with open(co2wui_fpath("output", run_id, "files.dat"), "rb") as files_list:
                 try:
                     files = dill.load(files_list)
                 except:
@@ -676,7 +675,11 @@ def create_app(configfile=None):
 
         # Get the summary of the execution (if ready)
         summary = get_summary(run_id)
-        result = "KO" if (summary is None or not summary or len(summary[0].keys()) <= 2) else "OK"
+        result = (
+            "KO"
+            if (summary is None or not summary or len(summary[0].keys()) <= 2)
+            else "OK"
+        )
 
         # Result is KO if not started and counter > 1
         if not started and counter > 1:
@@ -774,10 +777,10 @@ def create_app(configfile=None):
 
     @app.route("/run/add-file", methods=["POST"])
     def add_file():
-        uploaded_files = request.files.getlist('files[]')
+        uploaded_files = request.files.getlist("files[]")
         for f in uploaded_files:
-          f.save(str(co2wui_fpath("input", secure_filename(f.filename))))
-        return json.dumps('OK')
+            f.save(str(co2wui_fpath("input", secure_filename(f.filename))))
+        return json.dumps("OK")
 
     @app.route("/run/delete-file", methods=["GET"])
     def delete_file():
@@ -790,7 +793,7 @@ def create_app(configfile=None):
     def delete_all():
         inputs = listdir_inputs("input")
         for f in inputs:
-          f.unlink()
+            f.unlink()
         return redirect("/run/simulation-form", code=302)
 
     @app.route("/run/view-results")
@@ -810,7 +813,11 @@ def create_app(configfile=None):
             dirname = osp.basename(path)
             output_files = [f.name for f in listdir_outputs("output", dirname)]
             summary = get_summary(dirname)
-            outcome = "KO" if (summary is None or not summary or len(summary[0].keys()) <= 2) else "OK"
+            outcome = (
+                "KO"
+                if (summary is None or not summary or len(summary[0].keys()) <= 2)
+                else "OK"
+            )
             results.append(
                 {
                     "datetime": time.ctime(cdate),
@@ -884,7 +891,9 @@ def create_app(configfile=None):
         # Output zip file
         iofile.seek(0)
         return send_file(
-            iofile, attachment_filename="co2mpas-result-" + runid + ".zip", as_attachment=True
+            iofile,
+            attachment_filename="co2mpas-result-" + runid + ".zip",
+            as_attachment=True,
         )
 
     @app.route("/run/delete-results", methods=["POST"])
@@ -1178,8 +1187,8 @@ def create_app(configfile=None):
 
     @app.route("/plot/launched")
     def plot_launched():
-        if (not co2wui_globals["plot_port"]):
-          co2wui_globals["plot_port"] = get_free_port()
+        if not co2wui_globals["plot_port"]:
+            co2wui_globals["plot_port"] = get_free_port()
 
         return render_template(
             "layout.html",
@@ -1231,7 +1240,7 @@ def create_app(configfile=None):
             )
 
         ## FIXME: render this as a link in "Show model graph" page.
-        return ''
+        return ""
 
     @app.route("/conf/configuration-form")
     def configuration_form():
@@ -1314,11 +1323,7 @@ def create_app(configfile=None):
         # Output xls file
         iofile = io.BytesIO(data)
         iofile.seek(0)
-        return send_file(
-            iofile,
-            attachment_filename="conf.yaml",
-            as_attachment=True,
-        )
+        return send_file(iofile, attachment_filename="conf.yaml", as_attachment=True,)
 
     # Conf/download
     @app.route("/conf/download/<timestr>")
@@ -1368,7 +1373,10 @@ def cli():
     ## In `development` mode this code runs twice,
     #  the 1st to spawn the auto-reloading sources flask server (the 2nd).
     #
-    if os.environ['FLASK_ENV'] == 'development' and os.environ.get('WERKZEUG_RUN_MAIN') == 'true':
+    if (
+        os.environ["FLASK_ENV"] == "development"
+        and os.environ.get("WERKZEUG_RUN_MAIN") == "true"
+    ):
         return
 
     port = get_running_port()
