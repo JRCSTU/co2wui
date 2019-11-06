@@ -1368,6 +1368,13 @@ def cli():
     # Bypass our friend flask cli in order to set the port
     # FIXME: read port from cli/configs
     ensure_working_folders()
+
+    ## In `development` mode this code runs twice,
+    #  the 1st to spawn the auto-reloading sources flask server (the 2nd).
+    #
+    if os.environ['FLASK_ENV'] == 'development' and os.environ.get('WERKZEUG_RUN_MAIN') == 'true':
+        return
+
     port = get_running_port()
     was_app_running = port is not None
 
