@@ -1374,7 +1374,7 @@ def cli():
     #  the 1st to spawn the auto-reloading sources flask server (the 2nd).
     #
     if (
-        os.environ["FLASK_ENV"] == "development"
+        os.environ.get("FLASK_ENV") == "development"
         and os.environ.get("WERKZEUG_RUN_MAIN") == "true"
     ):
         return
