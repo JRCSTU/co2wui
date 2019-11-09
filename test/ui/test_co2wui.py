@@ -23,7 +23,7 @@ class TestLiveServer:
         driver.get(url_for("sync/template-form"))
 
         elem = driver.find_element_by_tag_name("h1")
-        assert elem.text == "Data synchronisation"
+        assert elem.text == "Synchronization template"
 
         elem = driver.find_element_by_tag_name("h3")
         assert elem.text == "Choose a datasync template type"
@@ -156,9 +156,6 @@ class TestLiveServer:
 
         elem = driver.find_element_by_id("file")
         elem.send_keys(os.path.join(os.getcwd(), "test", "datasync-empty.xlsx"))
-
-        driver.implicitly_wait(2)
-        elem = driver.find_element_by_id("add-sync-file-form").submit()
 
         wait = WebDriverWait(driver, 20)
         cond = wait.until(EC.visibility_of_element_located((By.ID, "delete-button")))
